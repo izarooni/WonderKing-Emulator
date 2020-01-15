@@ -29,10 +29,9 @@ public class User implements Disposable {
 
     @Override
     public void dispose() {
+        session.removeAttribute(SessionAttribute);
         session.suspendWrite();
         session.suspendRead();
-        session.closeOnFlush();
-        session.removeAttribute("user");
         session = null;
 
         if (channel != null) {

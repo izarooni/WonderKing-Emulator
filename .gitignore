@@ -1,3 +1,7 @@
+#Project files
+/.idea
+/classes
+
 # Compiled class file
 *.class
 

@@ -7,7 +7,7 @@ public class ByteArray {
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
-    public static byte[] getBytesInt16(short i) {
+    public static byte[] getBytesInt16(int i) {
         byte[] b = new byte[2];
         b[0] = (byte) (i & 0xFF);
         b[1] = (byte) ((i >>> 8) & 0xFF);

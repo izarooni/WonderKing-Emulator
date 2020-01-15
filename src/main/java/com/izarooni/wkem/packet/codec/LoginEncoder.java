@@ -20,7 +20,7 @@ public class LoginEncoder extends ProtocolEncoderAdapter {
         if (packet.length > 0x7FFF) { // not entirely sure if we can encode an unsigned amount of bytes in Java
             throw new RuntimeException("packet buffer is too long (" + packet.length + ")");
         }
-        byte[] dataLength = ByteArray.getBytesInt16((short) packet.length);
+        byte[] dataLength = ByteArray.getBytesInt16(packet.length);
         // insert data that says the packet length
         System.arraycopy(dataLength, 0, packet, 0, dataLength.length);
         // insert packet operation code with a 2-byte offset:

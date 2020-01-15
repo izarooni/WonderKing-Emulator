@@ -45,7 +45,6 @@ public class Player extends Entity {
 
     @Override
     public void encode(PacketWriter w) {
-
     }
 
     public void encodeStats(PacketWriter w) {

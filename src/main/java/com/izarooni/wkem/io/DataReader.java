@@ -29,10 +29,11 @@ public class DataReader {
     public static void loadBaseItemData() throws IOException {
         if (baseItemData != null) {
             baseItemData.clear();
+            System.gc();
         }
         FileInputStream fis = new FileInputStream("baseitemdata.dat");
         byte[] buffer = fis.readAllBytes();
-        de_xor(buffer, buffer.length);
+        magic_xor(buffer, buffer.length);
         PacketReader r = new PacketReader(buffer);
         r.seek(5);
         long count = r.readUnsignedInt();
@@ -115,7 +116,7 @@ public class DataReader {
         }
     }
 
-    private static void de_xor(byte[] dat, int fileSize) {
+    private static void magic_xor(byte[] dat, int fileSize) {
         for (int i = 0; i < fileSize; ++i) {
             dat[i] = (byte) (dat[i] ^ 197);
         }
