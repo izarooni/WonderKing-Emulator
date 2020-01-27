@@ -50,19 +50,19 @@ public enum LoginPacketCreator {
         return getLoginResponse(r.Id);
     }
 
-    public static PacketWriter getLoginSuccess() {
+    public static PacketWriter getChannelList() {
         PacketWriter w = getLoginResponse(LoginResponse_Ok);
         w.write(1);
         w.write(1);
 
         int channelCount = Backbone.getServers().stream().mapToInt(s -> s.getChannels().size()).sum();
-        w.write(channelCount);
+        w.writeShort(channelCount);
 
         for (Server server : Backbone.getServers()) {
             for (Channel channel : server.getChannels()) {
                 w.write(server.getId());
                 w.write(channel.getId());
-                w.write(0);
+                w.write(1);
             }
         }
         return w;
@@ -74,12 +74,19 @@ public enum LoginPacketCreator {
         PacketWriter w = new PacketWriter();
         w.writeShort(PacketOperations.Channel_Select.Id);
         w.write(0);
-        w.write(channel.getSocket().getLocalAddress().getAddress().getAddress());
+        w.writeAsciiString(channel.getAddress(), 16);
         w.writeShort(channel.getPort());
-        w.write(channel.getPlayers().size());
-
-        for (Player player : channel.getPlayers().values()) {
-            player.encode(w);
+        int playerCount = 0;
+        for (Player player : user.getPlayers()) {
+            if (player != null) {
+                playerCount++;
+            }
+        }
+        w.write(playerCount);
+        for (Player player : user.getPlayers()) {
+            if (player != null) {
+                player.encodeBasic(w);
+            }
         }
         return w;
     }
@@ -117,6 +124,7 @@ public enum LoginPacketCreator {
         w.write(0);
         w.writeAsciiString(user.getPassword(), 32);
         w.write(0);
+        w.write(new byte[22]);
         return w;
     }
 }

@@ -17,11 +17,6 @@ public class LoginDecoder extends ProtocolDecoderAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginDecoder.class);
     private static final String SessionAttribute = String.format("%s.%s", LoginDecoder.class.getName(), "state");
 
-    private static class DecoderState {
-        private int offset;
-        private byte[] packet;
-    }
-
     @Override
     public void decode(IoSession session, IoBuffer buffer, ProtocolDecoderOutput out) throws Exception {
         DecoderState state = (DecoderState) session.getAttribute(SessionAttribute);
@@ -41,7 +36,7 @@ public class LoginDecoder extends ProtocolDecoderAdapter {
         // read the length of the incoming packet
         byte[] lengthData = new byte[2];
         buffer.get(lengthData, 0, 2);
-        int packetLength = ByteArray.toShort(lengthData);
+        int packetLength = ByteArray.toUnsignedShort(lengthData);
 
         // array of the entire packet minus the 2 bytes we read to determine the packet length
         byte[] packet = new byte[packetLength - 2];

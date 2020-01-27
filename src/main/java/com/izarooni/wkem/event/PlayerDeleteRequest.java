@@ -1,7 +1,9 @@
 package com.izarooni.wkem.event;
 
+import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.PacketReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
+import com.izarooni.wkem.server.world.life.Player;
 
 /**
  * @author izarooni
@@ -15,11 +17,22 @@ public class PlayerDeleteRequest extends PacketRequest {
     public boolean process(PacketReader reader) {
         loginPosition = reader.readByte();
         username = reader.readAsciiString(20);
+        Player player = getUser().getPlayers()[loginPosition];
+        if (player == null) {
+            getLogger().error("deletion of non-existing character: {}", loginPosition);
+            return false;
+        } else if (!player.getUsername().equals(username)) {
+            getLogger().error("username mismatch at position {}. '{}' should be '{}'", loginPosition, username, player.getUsername());
+            return false;
+        }
         return true;
     }
 
     @Override
     public void run() {
-        getUser().sendPacket(LoginPacketCreator.getDeletePlayer(loginPosition));
+        User user = getUser();
+        user.sendPacket(LoginPacketCreator.getDeletePlayer(loginPosition));
+        // todo delete player
+        user.getPlayers()[loginPosition] = null;
     }
 }

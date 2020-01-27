@@ -10,6 +10,8 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * @author izarooni
  */
@@ -27,7 +29,7 @@ public class ServerHandler extends IoHandlerAdapter {
         User user = new User(session);
         user.setChannel(channel);
         session.setAttribute(User.SessionAttribute, user);
-        LOGGER.info("Session({}) created", session.getId());
+        LOGGER.info("Session({}) created on", session.getId());
     }
 
     @Override
@@ -44,7 +46,11 @@ public class ServerHandler extends IoHandlerAdapter {
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        if (cause instanceof IOException) {
+            System.err.println(cause.getMessage());
+        } else {
+            cause.printStackTrace();
+        }
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.izarooni.wkem.event;
 
+import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.PacketReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
+import com.izarooni.wkem.service.Backbone;
 
 /**
  * @author izarooni
@@ -9,6 +11,12 @@ import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 public class LoginRequest extends PacketRequest {
 
     private String username, password;
+
+    @Override
+    public void exception(Throwable t) {
+        super.exception(t);
+        getUser().sendPacket(LoginPacketCreator.getLoginResponse(LoginPacketCreator.LoginResponse_Error));
+    }
 
     @Override
     public boolean process(PacketReader reader) {
@@ -19,10 +27,15 @@ public class LoginRequest extends PacketRequest {
 
     @Override
     public void run() {
-        getUser().setUsername(username);
-        getUser().setPassword(password);
+        User user = getUser();
+        LoginPacketCreator result = user.login(username, password);
+        if (result != LoginPacketCreator.LoginResponse_Ok) {
+            user.sendPacket(LoginPacketCreator.getLoginResponse(result));
+            return;
+        }
 
-        getUser().sendPacket(LoginPacketCreator.getLoginSuccess());
+        Backbone.Users.put(username, user);
+        user.sendPacket(LoginPacketCreator.getChannelList());
         getLogger().info("Login attempt user('{}') password('{}')", username, password);
     }
 }

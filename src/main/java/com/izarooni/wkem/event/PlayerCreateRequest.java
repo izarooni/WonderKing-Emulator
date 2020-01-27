@@ -36,13 +36,17 @@ public class PlayerCreateRequest extends PacketRequest {
         } else if (!user.getPlayer().getUsername().equals(username)) {
             getLogger().warn("username mismatch; '{}' supposed to be '{}'", username, user.getPlayer().getUsername());
             return false;
+        } else if (user.getPlayers()[loginPosition] != null) {
+            getLogger().warn("creating character in position where one already exists: {}", loginPosition);
+            return false;
         }
         return true;
     }
 
     @Override
     public void run() {
-        Player player = getUser().getPlayer();
+        User user = getUser();
+        Player player = user.getPlayer();
 
         hair = (short) ((job - 1) * 6 + (gender - 1) * 3 + hair + 1);
         eyes = (short) ((job - 1) * 6 + (gender - 1) * 3 + eyes + 25);
@@ -50,6 +54,8 @@ public class PlayerCreateRequest extends PacketRequest {
         pants = (short) ((gender - 1) * 3 + pants + 58);
 
         player.setLoginPosition(loginPosition);
+        player.setHair(hair);
+        player.setEyes(eyes);
         player.setJob(job);
         player.setGender(gender);
 
@@ -84,8 +90,9 @@ public class PlayerCreateRequest extends PacketRequest {
         player.getItems().add(new Item(shirt));
         player.getItems().add(new Item(pants));
 
-        getUser().sendPacket(LoginPacketCreator.getCreatePlayer(player));
+        user.sendPacket(LoginPacketCreator.getCreatePlayer(player));
         getLogger().info("Created player('{}')", player.getUsername());
-        player.setUser(getUser());
+        player.setUser(user);
+        user.getPlayers()[loginPosition] = player;
     }
 }

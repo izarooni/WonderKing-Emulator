@@ -15,14 +15,6 @@ public class PacketWriter extends LittleEndianWriter {
         super(size);
     }
 
-    public void writeMapleString(String s) {
-        if (s == null) {
-            throw new NullPointerException("Can't write a null string to the byte array");
-        }
-        writeShort(s.length());
-        writeAsciiString(s);
-    }
-
     public void writeBoolean(boolean b) {
         baos.write(b ? 1 : 0);
     }

@@ -20,9 +20,11 @@ public class Player extends Entity {
     private long exp;
     private int hp, maxHp;
     private int mp, maxMp;
+    private short hair, eyes;
     private short str, dex, $int, luk;
     private short vitality, wisdom;
     private int mapId;
+    private int money;
     private byte loginPosition;
     private byte level;
     private byte job;
@@ -51,9 +53,9 @@ public class Player extends Entity {
         w.writeShort(str);
         w.writeShort(dex);
         w.writeShort($int);
-        w.writeShort(0); // vitality
+        w.writeShort(vitality);
         w.writeShort(luk);
-        w.writeShort(0); // wisdom
+        w.writeShort(wisdom);
     }
 
     public void encodeBasic(PacketWriter w) {
@@ -66,13 +68,11 @@ public class Player extends Entity {
         w.write(0);
         //endregion
         w.write(gender);
-        w.write(level);
-        w.write(0);
-        w.write(0); // exp
+        w.writeShort(level);
+        w.write(50); // exp as percentage
         encodeStats(w);
         w.writeInt(hp);
         w.writeInt(mp);
-
         encodeItems(w, StorageType.Equipped, 20);
         encodeItems(w, StorageType.EquippedCash, 20);
     }
@@ -155,6 +155,22 @@ public class Player extends Entity {
         this.maxMp = maxMp;
     }
 
+    public short getHair() {
+        return hair;
+    }
+
+    public void setHair(short hair) {
+        this.hair = hair;
+    }
+
+    public short getEyes() {
+        return eyes;
+    }
+
+    public void setEyes(short eyes) {
+        this.eyes = eyes;
+    }
+
     public short getStr() {
         return str;
     }
@@ -209,6 +225,14 @@ public class Player extends Entity {
 
     public void setMapId(int mapId) {
         this.mapId = mapId;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public byte getLoginPosition() {

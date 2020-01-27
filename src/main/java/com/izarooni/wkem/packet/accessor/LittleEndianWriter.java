@@ -2,21 +2,18 @@ package com.izarooni.wkem.packet.accessor;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author izarooni
  */
 public class LittleEndianWriter {
 
-    private static final Charset ASCII = Charset.forName("US-ASCII");
+    private static final Charset ASCII = StandardCharsets.US_ASCII;
     ByteArrayOutputStream baos;
 
     LittleEndianWriter(int size) {
         baos = new ByteArrayOutputStream(size);
-    }
-
-    final void setByteArrayOutputStream(ByteArrayOutputStream baos) {
-        this.baos = baos;
     }
 
     public void write(byte[] b) {

@@ -1,8 +1,10 @@
 package com.izarooni.wkem.client;
 
 import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.service.Backbone;
 import com.izarooni.wkem.util.Disposable;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
@@ -20,24 +22,51 @@ public class User implements Disposable {
     private IoSession session;
     private Channel channel;
     private Player player;
+    private final Player[] players;
     private int id;
     private String username, password;
 
     public User(IoSession session) {
         this.session = session;
+
+        players = new Player[3];
     }
 
     @Override
     public void dispose() {
-        session.removeAttribute(SessionAttribute);
-        session.suspendWrite();
-        session.suspendRead();
-        session = null;
-
+        if (session != null) {
+            session.removeAttribute(SessionAttribute);
+            session.suspendWrite();
+            session.suspendRead();
+            session = null;
+        }
         if (channel != null) {
             channel.getPlayers().remove(getId());
             channel = null;
         }
+        for (Player player : players) {
+            if (player != null) {
+                player.dispose();
+            }
+        }
+        player = null;
+    }
+
+    public LoginPacketCreator login(String username, String password) {
+        this.username = username;
+        this.password = password;
+
+        LoginPacketCreator result = LoginPacketCreator.LoginResponse_Ok;
+        User user = Backbone.Users.get(username);
+        if (user != null) {
+            if (user.password.equals(password)) {
+                System.arraycopy(user.players, 0, players, 0, players.length);
+                user.dispose();
+            } else {
+                result = LoginPacketCreator.LoginResponse_IncorrectPassword;
+            }
+        }
+        return result;
     }
 
     public WriteFuture sendPacket(PacketWriter packet) {
@@ -66,6 +95,10 @@ public class User implements Disposable {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Player[] getPlayers() {
+        return players;
     }
 
     public int getId() {
