@@ -2,6 +2,7 @@ package com.izarooni.wkem.packet.magic;
 
 import com.izarooni.wkem.packet.accessor.PacketWriter;
 import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
 
 /**
  * @author izarooni
@@ -11,7 +12,7 @@ public class GamePacketCreator {
     private GamePacketCreator() {
     }
 
-    public static PacketWriter getEnterGame(Player player) {
+    public static PacketWriter getPlayerInfo(Player player) {
         PacketWriter w = new PacketWriter(2000);
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
@@ -31,35 +32,26 @@ public class GamePacketCreator {
         w.write(0); // job 2
         w.write(0); // job 3
         w.write(0); // job 4
-        w.writeInt(player.getMoney()); // money
-        for (int i = 0; i < 12; i++) {
-            w.writeShort(0); // item ID
-        }
-        w.writeShort(player.getHair()); // hair
-        w.writeShort(player.getEyes()); // face
-        w.write(new byte[12]);
-        for (int i = 0; i < 12; i++) {
-//            w.AddByte(item.Level);
-//            w.AddByte(item.RareType);
-//            w.AddByte(item.AddOption);
-//            w.AddByte(item.AddOption2);
-//            w.AddByte(item.AddOption3);
-//            w.AddInt16(item.Option);
-//            w.AddInt16(item.Option2);
-//            w.AddInt16(item.Option3);
-            w.write(new byte[11]); // item id
-        }
+        w.writeLong(player.getZed()); // money
+        player.encodeItems(w, StorageType.Equipped, 20);
+        player.encodeItems(w, StorageType.EquippedCash, 20);
+
+        w.skip(42);
+
         w.writeShort(player.getStr());
         w.writeShort(player.getDex());
         w.writeShort(player.getInt());
         w.writeShort(player.getVitality());
         w.writeShort(player.getLuk());
         w.writeShort(player.getWisdom());
+
         w.writeShort(player.getHp());
         w.writeShort(player.getMp());
         w.writeShort(player.getMaxHp());
         w.writeShort(player.getMaxMp());
+
         w.writeShort(1000);
+
         w.writeShort(10); // watk min
         w.writeShort(15); // watk max
         w.writeShort(0); // range atk min
@@ -67,79 +59,61 @@ public class GamePacketCreator {
         w.writeShort(1); // pad
         w.writeShort(38); // accuracy? "hit rate"
         w.writeShort(6); // evasion
-        w.writeShort(0);
-        w.writeShort(0);
-        w.writeShort(0);
-        w.writeShort(0);
-        w.writeShort(0);
+
+        w.writeShort(10);
+        w.writeShort(7);
+        w.writeShort(7);
+        w.writeShort(7);
+        w.writeShort(7);
+
         w.writeShort(0); //fire
         w.writeShort(0); //water
-        w.writeShort(0); //blalba
-        w.writeShort(0); //blat
+        w.writeShort(0); //shadow
+        w.writeShort(0); //holy
+        w.writeInt(0); // x-velocity?
+        w.writeInt(0); // y-velocity?
+        w.writeShort(0); // critical
+        w.writeShort(0); // bonus
+        w.writeShort(0); // skill points
+        w.skip(44);
 
-        w.writeInt(0);
-        w.writeInt(0);
+        w.write(1); // eqp_bags
+        w.write(1); // etc_bags
 
-        w.write(51);
-        w.write(51);
-        w.write(51);
-        w.write(64);
+        w.skip(304);
 
+        w.write(0); // skill_count
+//        for (int i = 0; i < skill_count; i++) {
+//            w.writeShort(skill_id);
+//            w.write(skill_level);
+//            w.writeInt(0);
+//        }
+        byte[] numArray = new byte[]{
+                (byte) 2, (byte) 111, (byte) 2, (byte) 1,
+                (byte) 2, (byte) 69, (byte) 2, (byte) 2,
+                (byte) 2, (byte) 97, (byte) 2, (byte) 3,
+                (byte) 2, (byte) 181, (byte) 2, (byte) 4,
+                (byte) 1, (byte) 136, (byte) 0, (byte) 5,
+                (byte) 1, (byte) 128, (byte) 1, (byte) 6,
+                (byte) 1, (byte) 126, (byte) 1, (byte) 7,
+                (byte) 2, (byte) 41, (byte) 0};
+
+        w.write(8);
+        for (int i = 0; i < 8; ++i) {
+            w.write(numArray[i]);
+            w.write(numArray[i + 1]);
+            w.write(numArray[i + 2]);
+            w.write(numArray[i + 3]);
+        }
+        return w;
+    }
+
+    public static PacketWriter getGameEnter() {
+        PacketWriter w = new PacketWriter(32);
+        w.writeShort(PacketOperations.Game_Enter.Id);
+        w.write(0);
+        w.write(5);
         w.writeShort(0);
-        w.writeShort(16744);
-        w.writeShort(1);
-        w.writeShort(0); // ap
-        w.writeShort(0); // sp
-        w.writeShort(1);
-
-        w.write(new byte[38]);
-
-        int eqpBags = 1, etcBags = 2;
-        w.write(eqpBags); // equip bags
-        w.write(etcBags); // etc bags
-        for (int j = 0; j < eqpBags; j++) {
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-                w.writeInt(0); // item id
-            }
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-                w.writeInt(0); // item id
-            }
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-//            w.AddByte(item.Level);
-//            w.AddByte(item.RareType);
-//            w.AddByte(item.AddOption);
-//            w.AddByte(item.AddOption2);
-//            w.AddByte(item.AddOption3);
-//            w.AddInt16(item.Option);
-//            w.AddInt16(item.Option2);
-//            w.AddInt16(item.Option3);
-                w.write(new byte[11]);
-            }
-        }
-
-        for (int j = 0; j < etcBags; j++) {
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-                w.writeInt(0); // item id
-            }
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-                w.writeInt(0); // item id
-            }
-            for (int i = 20 * j; i < 20 * (j + 1); i++) {
-//            w.AddByte(item.Level);
-//            w.AddByte(item.RareType);
-//            w.AddByte(item.AddOption);
-//            w.AddByte(item.AddOption2);
-//            w.AddByte(item.AddOption3);
-//            w.AddInt16(item.Option);
-//            w.AddInt16(item.Option2);
-//            w.AddInt16(item.Option3);
-                w.write(new byte[11]);
-            }
-        }
-
-        w.writeInt(1);
-        w.write(new byte[302]);
-        w.write(new byte[]{0x05, 0x00, 0x02, 0x35, 0x02, 0x01, 0x02, 0x29, 0x00, 0x04, 0x01, 0x7C, 0x01, 0x05, 0x01, 0x7D, 0x01, 0x06, 0x01, 0x7E, 0x01});
         return w;
     }
 }

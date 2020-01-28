@@ -63,9 +63,7 @@ public class ServerHandler extends IoHandlerAdapter {
 
         PacketReader reader = (PacketReader) message;
         short header = reader.readShort();
-        if (reader.available() > 0) {
-            reader.skip(4);
-        }
+        reader.skip(4);
         Class<? extends PacketRequest> handler = PacketOperations.handlerOf(header);
         if (handler == null) {
             LOGGER.info("No handler for packet '{}'", header);

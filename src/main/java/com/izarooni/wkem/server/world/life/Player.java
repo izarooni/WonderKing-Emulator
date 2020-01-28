@@ -24,7 +24,7 @@ public class Player extends Entity {
     private short str, dex, $int, luk;
     private short vitality, wisdom;
     private int mapId;
-    private int money;
+    private int zed;
     private byte loginPosition;
     private byte level;
     private byte job;
@@ -36,7 +36,7 @@ public class Player extends Entity {
         level = 1;
         hp = maxHp = 50;
         mp = maxMp = 50;
-        mapId = 901;
+        mapId = 300;
         location = new Vector2D(113, 0);
         items = new ArrayList<>(30);
     }
@@ -87,6 +87,19 @@ public class Player extends Entity {
             } else {
                 w.writeShort(0);
             }
+        }
+        for (int i = 0; i < count; i++) {
+            /*
+            w.write(itemLevel);
+            w.write(itemRarity);
+            w.write(itemAddOption);
+            w.write(itemAddOption2);
+            w.write(itemAddOption3);
+            w.writeShort(itemOption);
+            w.writeShort(itemOption2);
+            w.writeShort(itemOption3);
+             */
+            w.skip(11);
         }
         h.clear();
     }
@@ -227,12 +240,12 @@ public class Player extends Entity {
         this.mapId = mapId;
     }
 
-    public int getMoney() {
-        return money;
+    public int getZed() {
+        return zed;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
+    public void setZed(int zed) {
+        this.zed = zed;
     }
 
     public byte getLoginPosition() {

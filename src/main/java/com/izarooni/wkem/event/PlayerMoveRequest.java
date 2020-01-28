@@ -1,8 +1,6 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.packet.accessor.PacketReader;
-import com.izarooni.wkem.packet.accessor.PacketWriter;
-import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 
@@ -15,12 +13,11 @@ public class PlayerMoveRequest extends PacketRequest {
 
     @Override
     public boolean process(PacketReader reader) {
-        reader.skip(4);
+        int playerID = reader.readShort();
+        int flag1 = reader.readShort();
         location = new Vector2D(reader.readShort(), reader.readShort());
-
-        PacketWriter w = new PacketWriter();
-        w.write(reader.array());
-        getUser().sendPacket(w);
+        short flag2 = reader.readByte();
+        int flag3 = reader.readInt();
         return true;
     }
 

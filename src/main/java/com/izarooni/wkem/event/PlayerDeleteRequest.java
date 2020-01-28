@@ -16,7 +16,7 @@ public class PlayerDeleteRequest extends PacketRequest {
     @Override
     public boolean process(PacketReader reader) {
         loginPosition = reader.readByte();
-        username = reader.readAsciiString(20);
+        username = reader.readAsciiString(20).trim();
         Player player = getUser().getPlayers()[loginPosition];
         if (player == null) {
             getLogger().error("deletion of non-existing character: {}", loginPosition);
@@ -32,7 +32,6 @@ public class PlayerDeleteRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         user.sendPacket(LoginPacketCreator.getDeletePlayer(loginPosition));
-        // todo delete player
         user.getPlayers()[loginPosition] = null;
     }
 }

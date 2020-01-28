@@ -56,13 +56,16 @@ public class GameEnterRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         user.setPlayer(selectedPlayer);
-        user.sendPacket(GamePacketCreator.getEnterGame(selectedPlayer));
+        user.sendPacket(GamePacketCreator.getPlayerInfo(selectedPlayer));
+        user.sendPacket(GamePacketCreator.getGameEnter());
 
-        PacketWriter w = new PacketWriter(32);
-        w.writeShort(PacketOperations.Game_Enter.Id);
+        PacketWriter w = new PacketWriter();
+        w.writeShort(PacketOperations.Keyboard.Id);
         w.write(0);
-        w.write(5);
-        w.write(0);
+        user.sendPacket(w);
+
+        w = new PacketWriter();
+        w.writeShort(PacketOperations.Ping.Id);
         user.sendPacket(w);
     }
 }
