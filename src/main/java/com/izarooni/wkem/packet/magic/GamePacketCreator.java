@@ -2,6 +2,7 @@ package com.izarooni.wkem.packet.magic;
 
 import com.izarooni.wkem.packet.accessor.PacketWriter;
 import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
 
 /**
@@ -38,12 +39,7 @@ public class GamePacketCreator {
 
         w.skip(42);
 
-        w.writeShort(player.getStr());
-        w.writeShort(player.getDex());
-        w.writeShort(player.getInt());
-        w.writeShort(player.getVitality());
-        w.writeShort(player.getLuk());
-        w.writeShort(player.getWisdom());
+        player.encodeStats(w);
 
         w.writeShort(player.getHp());
         w.writeShort(player.getMp());
@@ -57,7 +53,7 @@ public class GamePacketCreator {
         w.writeShort(0); // range atk min
         w.writeShort(0); // range atk max
         w.writeShort(1); // pad
-        w.writeShort(38); // accuracy? "hit rate"
+        w.writeShort(38); // hit rate
         w.writeShort(6); // evasion
 
         w.writeShort(10);
@@ -66,20 +62,29 @@ public class GamePacketCreator {
         w.writeShort(7);
         w.writeShort(7);
 
-        w.writeShort(0); //fire
-        w.writeShort(0); //water
-        w.writeShort(0); //shadow
-        w.writeShort(0); //holy
-        w.writeInt(0); // x-velocity?
-        w.writeInt(0); // y-velocity?
+        //region elemental damage
+        w.writeShort(0); // fire
+        w.writeShort(0); // water
+        w.writeShort(0); // dark
+        w.writeShort(0); // holy
+        //endregion
+        //region elemental resistance
+        w.writeShort(0); // fire
+        w.writeShort(0); // water
+        w.writeShort(0); // dark
+        w.writeShort(0); // holy
+        //endregion
+
+        w.writeFloat(2.8f);
+        w.writeFloat(16f);
         w.writeShort(0); // critical
-        w.writeShort(0); // bonus
-        w.writeShort(0); // skill points
+        w.writeShort(0); // bonus stats
         w.skip(44);
 
         w.write(1); // eqp_bags
         w.write(1); // etc_bags
-
+        player.encodeInventory(w, StorageType.Equip, 1);
+        player.encodeInventory(w, StorageType.Etc, 1);
         w.skip(304);
 
         w.write(0); // skill_count
@@ -109,11 +114,31 @@ public class GamePacketCreator {
     }
 
     public static PacketWriter getGameEnter() {
-        PacketWriter w = new PacketWriter(32);
+        PacketWriter w = new PacketWriter(6);
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
         w.write(5);
         w.writeShort(0);
+        return w;
+    }
+
+    /**
+     * @param playerID unique ID of the moving player
+     * @param flag1    int16
+     * @param flag2    unsigned byte
+     * @param flag3    int32
+     */
+    public static PacketWriter getPlayerMove(int playerID,
+                                             short flag1, short flag2, int flag3,
+                                             Vector2D location) {
+        PacketWriter w = new PacketWriter();
+        w.writeShort(PacketOperations.Player_Move.Id);
+        w.writeShort(playerID);
+        w.writeShort(flag1);
+        w.writeShort(location.getX());
+        w.writeShort(location.getY());
+        w.write(flag2);
+        w.writeInt(flag3);
         return w;
     }
 }

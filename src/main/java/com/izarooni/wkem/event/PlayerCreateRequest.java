@@ -62,16 +62,20 @@ public class PlayerCreateRequest extends PacketRequest {
         short[] stats;
 
         switch (job) {
-            case 1:
+            case 1: // warrior
+                player.getItems().add(new Item((short) 70)); // wooden club
                 stats = new short[]{13, 9, 3, 5, 17, 5};
                 break;
-            case 2:
+            case 2: // mage
+                player.getItems().add(new Item((short) 150)); // shabby staff
                 stats = new short[]{6, 6, 14, 3, 15, 11};
                 break;
-            case 3:
+            case 3: // thief
+                player.getItems().add(new Item((short) 218)); // rusty dagger
                 stats = new short[]{7, 11, 5, 9, 16, 6};
                 break;
-            case 4:
+            case 4: // scout
+                player.getItems().add(new Item((short) 299)); // shabby bow
                 stats = new short[]{6, 13, 8, 6, 8, 7};
                 break;
             default:
@@ -89,6 +93,9 @@ public class PlayerCreateRequest extends PacketRequest {
         player.getItems().add(new Item(eyes));
         player.getItems().add(new Item(shirt));
         player.getItems().add(new Item(pants));
+
+        player.getItems().add(new Item((short) 767)); // (GM) uniform shoes
+        player.getItems().add(new Item((short) 763)); // (GM) uniform hat
 
         user.sendPacket(LoginPacketCreator.getCreatePlayer(player));
         getLogger().info("Created player('{}')", player.getUsername());

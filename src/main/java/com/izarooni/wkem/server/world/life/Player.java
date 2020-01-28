@@ -36,7 +36,9 @@ public class Player extends Entity {
         level = 1;
         hp = maxHp = 50;
         mp = maxMp = 50;
-        mapId = 300;
+        // 300 - tutorial map
+        // 901 - event map
+        mapId = 901;
         location = new Vector2D(113, 0);
         items = new ArrayList<>(30);
     }
@@ -100,6 +102,40 @@ public class Player extends Entity {
             w.writeShort(itemOption3);
              */
             w.skip(11);
+        }
+        h.clear();
+    }
+
+    public void encodeInventory(PacketWriter w, StorageType type, int bags) {
+        HashMap<Short, Item> h = new HashMap<>();
+        items.stream().filter(i -> i.getStorageType() == type)
+                .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+
+        for (short bag = 0; bag < bags; bag++) {
+            final short start = (short) (20 * bag),
+                    end = (short) (20 * (bag + 1));
+
+            for (short key = start; key < end; key++) {
+                if (h.containsKey(key)) w.writeShort(h.get(key).getId());
+                else w.writeShort(0);
+            }
+            for (short key = start; key < end; key++) {
+                if (h.containsKey(key)) w.writeShort(h.get(key).getQuantity());
+                else w.writeShort(0);
+            }
+            for (short key = start; key < end; key++) {
+                /*
+                w.write(itemLevel);
+                w.write(itemRarity);
+                w.write(itemAddOption);
+                w.write(itemAddOption2);
+                w.write(itemAddOption3);
+                w.writeShort(itemOption);
+                w.writeShort(itemOption2);
+                w.writeShort(itemOption3);
+                 */
+                w.skip(11);
+            }
         }
         h.clear();
     }

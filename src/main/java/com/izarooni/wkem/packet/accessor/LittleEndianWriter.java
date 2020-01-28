@@ -75,4 +75,12 @@ public class LittleEndianWriter {
         baos.write((byte) ((l >>> 48) & 0xFF));
         baos.write((byte) ((l >>> 56) & 0xFF));
     }
+
+    public void writeFloat(float v) {
+        int bits = Float.floatToIntBits(v);
+        baos.write((byte) (bits & 0xff));
+        baos.write((byte) ((bits >> 8) & 0xff));
+        baos.write((byte) ((bits >> 16) & 0xff));
+        baos.write((byte) ((bits >> 24) & 0xff));
+    }
 }
