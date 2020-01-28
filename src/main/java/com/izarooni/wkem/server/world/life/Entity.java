@@ -1,6 +1,6 @@
 package com.izarooni.wkem.server.world.life;
 
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.util.Disposable;
 
 /**
@@ -8,5 +8,5 @@ import com.izarooni.wkem.util.Disposable;
  */
 public abstract class Entity implements Disposable {
 
-    public abstract void encode(PacketWriter w);
+    public abstract void encode(EndianWriter w);
 }

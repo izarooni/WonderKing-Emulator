@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.codec;
 
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.util.ByteArray;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -28,7 +28,7 @@ public class LoginDecoder extends ProtocolDecoderAdapter {
             buffer.get(remaining, 0, remaining.length);
             decode(remaining);
             System.arraycopy(remaining, 0, state.packet, state.offset, remaining.length);
-            out.write(new PacketReader(state.packet));
+            out.write(new EndianReader(state.packet));
             state.packet = null;
             return;
         }
@@ -56,7 +56,7 @@ public class LoginDecoder extends ProtocolDecoderAdapter {
             session.setAttribute(SessionAttribute, state);
         } else {
             // sufficient amount of packet data; let server process
-            out.write(new PacketReader(packet));
+            out.write(new EndianReader(packet));
         }
     }
 

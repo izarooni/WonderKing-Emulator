@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.codec;
 
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.util.ByteArray;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -14,8 +14,8 @@ public class LoginEncoder extends ProtocolEncoderAdapter {
 
     @Override
     public void encode(IoSession session, Object o, ProtocolEncoderOutput out) throws Exception {
-        PacketWriter w = (PacketWriter) o;
-        byte[] data = w.getPacket();
+        EndianWriter w = (EndianWriter) o;
+        byte[] data = w.array();
         byte[] packet = new byte[w.length() + 6];
         if (packet.length > 0x7FFF) { // not entirely sure if we can encode an unsigned amount of bytes in Java
             throw new RuntimeException("packet buffer is too long (" + packet.length + ")");

@@ -1,7 +1,7 @@
 package com.izarooni.wkem.packet.magic;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.Server;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.life.Player;
@@ -38,20 +38,20 @@ public enum LoginPacketCreator {
         this.Id = Id;
     }
 
-    public static PacketWriter getLoginResponse(int r) {
+    public static EndianWriter getLoginResponse(int r) {
         if (r > LoginResponse_NotMoreTries.Id) throw new IllegalArgumentException("invalid response");
-        PacketWriter w = new PacketWriter(3);
+        EndianWriter w = new EndianWriter(3);
         w.writeShort(PacketOperations.Login_Response.Id);
         w.write(r);
         return w;
     }
 
-    public static PacketWriter getLoginResponse(LoginPacketCreator r) {
+    public static EndianWriter getLoginResponse(LoginPacketCreator r) {
         return getLoginResponse(r.Id);
     }
 
-    public static PacketWriter getChannelList() {
-        PacketWriter w = getLoginResponse(LoginResponse_Ok);
+    public static EndianWriter getChannelList() {
+        EndianWriter w = getLoginResponse(LoginResponse_Ok);
         w.write(1);
         w.write(1);
 
@@ -68,10 +68,10 @@ public enum LoginPacketCreator {
         return w;
     }
 
-    public static PacketWriter getPlayerList(User user) {
+    public static EndianWriter getPlayerList(User user) {
         Channel channel = user.getChannel();
 
-        PacketWriter w = new PacketWriter();
+        EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Channel_Select.Id);
         w.write(0);
         w.writeAsciiString(channel.getAddress(), 16);
@@ -91,35 +91,35 @@ public enum LoginPacketCreator {
         return w;
     }
 
-    public static PacketWriter getNameCheckResponse(LoginPacketCreator r) {
+    public static EndianWriter getNameCheckResponse(LoginPacketCreator r) {
         return getNameCheckResponse(r.Id);
     }
 
-    public static PacketWriter getNameCheckResponse(int r) {
+    public static EndianWriter getNameCheckResponse(int r) {
         if (r > NameCheckResponse_Incorrect.Id) throw new IllegalArgumentException("invalid response");
-        PacketWriter w = new PacketWriter();
+        EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Character_Name_Check.Id);
         w.write(r);
         return w;
     }
 
-    public static PacketWriter getCreatePlayer(Player player) {
-        PacketWriter w = new PacketWriter();
+    public static EndianWriter getCreatePlayer(Player player) {
+        EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Character_Create.Id);
         w.write(0);
         player.encodeBasic(w);
         return w;
     }
 
-    public static PacketWriter getDeletePlayer(byte loginPosition) {
-        PacketWriter w = new PacketWriter(3);
+    public static EndianWriter getDeletePlayer(byte loginPosition) {
+        EndianWriter w = new EndianWriter(3);
         w.writeShort(PacketOperations.Character_Delete.Id);
         w.write(loginPosition);
         return w;
     }
 
-    public static PacketWriter getSelectPlayer(User user) {
-        PacketWriter w = new PacketWriter();
+    public static EndianWriter getSelectPlayer(User user) {
+        EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Character_Select.Id);
         w.write(0);
         w.writeAsciiString(user.getPassword(), 32);

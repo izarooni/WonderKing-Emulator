@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.magic;
 
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
@@ -13,8 +13,8 @@ public class GamePacketCreator {
     private GamePacketCreator() {
     }
 
-    public static PacketWriter getPlayerInfo(Player player) {
-        PacketWriter w = new PacketWriter(2000);
+    public static EndianWriter getPlayerInfo(Player player) {
+        EndianWriter w = new EndianWriter(2000);
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
         w.write(1);
@@ -113,8 +113,8 @@ public class GamePacketCreator {
         return w;
     }
 
-    public static PacketWriter getGameEnter() {
-        PacketWriter w = new PacketWriter(6);
+    public static EndianWriter getGameEnter() {
+        EndianWriter w = new EndianWriter(6);
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
         w.write(5);
@@ -128,10 +128,10 @@ public class GamePacketCreator {
      * @param flag2    unsigned byte
      * @param flag3    int32
      */
-    public static PacketWriter getPlayerMove(int playerID,
+    public static EndianWriter getPlayerMove(int playerID,
                                              short flag1, short flag2, int flag3,
                                              Vector2D location) {
-        PacketWriter w = new PacketWriter();
+        EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Player_Move.Id);
         w.writeShort(playerID);
         w.writeShort(flag1);

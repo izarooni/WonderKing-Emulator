@@ -2,7 +2,7 @@ package com.izarooni.wkem.service;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.event.PacketRequest;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.Channel;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -61,7 +61,7 @@ public class ServerHandler extends IoHandlerAdapter {
             throw new NullPointerException("no user instantiated");
         }
 
-        PacketReader reader = (PacketReader) message;
+        EndianReader reader = (EndianReader) message;
         short header = reader.readShort();
         reader.skip(4);
         Class<? extends PacketRequest> handler = PacketOperations.handlerOf(header);

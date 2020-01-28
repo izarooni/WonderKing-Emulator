@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.Server;
 import com.izarooni.wkem.server.world.Channel;
@@ -18,7 +18,7 @@ public class ChannelSelectRequest extends PacketRequest {
     private Channel channel;
 
     @Override
-    public boolean process(PacketReader reader) {
+    public boolean process(EndianReader reader) {
         serverId = reader.readShort();
         channelId = reader.readShort();
         Server server = Backbone.getServers().get(serverId);

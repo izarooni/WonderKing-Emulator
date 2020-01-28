@@ -1,7 +1,7 @@
 package com.izarooni.wkem.io;
 
 import com.izarooni.wkem.io.meta.TemplateItem;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class DataReader {
         FileInputStream fis = new FileInputStream("baseitemdata.dat");
         byte[] buffer = fis.readAllBytes();
         magic_xor(buffer, buffer.length);
-        PacketReader r = new PacketReader(buffer);
+        EndianReader r = new EndianReader(buffer);
         r.seek(5);
         long count = r.readUnsignedInt();
         baseItemData = new HashMap<>((int) ((0.75 / 100) * count));

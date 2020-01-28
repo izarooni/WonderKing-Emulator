@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.world.life.Player;
 
@@ -14,7 +14,7 @@ public class PlayerSelectRequest extends PacketRequest {
     private String username;
 
     @Override
-    public boolean process(PacketReader reader) {
+    public boolean process(EndianReader reader) {
         loginPosition = reader.readByte();
         username = reader.readAsciiString(20).trim();
 

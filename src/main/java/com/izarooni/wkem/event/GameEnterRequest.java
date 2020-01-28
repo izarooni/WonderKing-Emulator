@@ -1,11 +1,9 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
-import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.service.Backbone;
 
@@ -17,7 +15,7 @@ public class GameEnterRequest extends PacketRequest {
     private Player selectedPlayer;
 
     @Override
-    public boolean process(PacketReader reader) {
+    public boolean process(EndianReader reader) {
         User user = getUser();
 
         String accountUsername = reader.readAsciiString(20).trim();
@@ -58,14 +56,5 @@ public class GameEnterRequest extends PacketRequest {
         user.setPlayer(selectedPlayer);
         user.sendPacket(GamePacketCreator.getPlayerInfo(selectedPlayer));
         user.sendPacket(GamePacketCreator.getGameEnter());
-
-        PacketWriter w = new PacketWriter();
-        w.writeShort(PacketOperations.Keyboard.Id);
-        w.write(0);
-        user.sendPacket(w);
-
-        w = new PacketWriter();
-        w.writeShort(PacketOperations.Ping.Id);
-        user.sendPacket(w);
     }
 }

@@ -1,7 +1,7 @@
 package com.izarooni.wkem.server.world.life;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.Item;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
@@ -48,10 +48,10 @@ public class Player extends Entity {
     }
 
     @Override
-    public void encode(PacketWriter w) {
+    public void encode(EndianWriter w) {
     }
 
-    public void encodeStats(PacketWriter w) {
+    public void encodeStats(EndianWriter w) {
         w.writeShort(str);
         w.writeShort(dex);
         w.writeShort($int);
@@ -60,7 +60,7 @@ public class Player extends Entity {
         w.writeShort(wisdom);
     }
 
-    public void encodeBasic(PacketWriter w) {
+    public void encodeBasic(EndianWriter w) {
         w.writeInt(loginPosition);
         w.writeAsciiString(username, 20);
         //region job advancements
@@ -79,7 +79,7 @@ public class Player extends Entity {
         encodeItems(w, StorageType.EquippedCash, 20);
     }
 
-    public void encodeItems(PacketWriter w, StorageType type, int count) {
+    public void encodeItems(EndianWriter w, StorageType type, int count) {
         HashMap<Short, Item> h = new HashMap<>();
         items.stream().filter(i -> i.getStorageType() == type)
                 .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
@@ -106,7 +106,7 @@ public class Player extends Entity {
         h.clear();
     }
 
-    public void encodeInventory(PacketWriter w, StorageType type, int bags) {
+    public void encodeInventory(EndianWriter w, StorageType type, int bags) {
         HashMap<Short, Item> h = new HashMap<>();
         items.stream().filter(i -> i.getStorageType() == type)
                 .forEach(i -> h.put((short) i.getTemplate().slotNo, i));

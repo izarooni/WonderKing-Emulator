@@ -1,6 +1,6 @@
 package com.izarooni.wkem.client;
 
-import com.izarooni.wkem.packet.accessor.PacketWriter;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.life.Player;
@@ -69,7 +69,7 @@ public class User implements Disposable {
         return result;
     }
 
-    public WriteFuture sendPacket(PacketWriter packet) {
+    public WriteFuture sendPacket(EndianWriter packet) {
         return session.write(packet);
     }
 

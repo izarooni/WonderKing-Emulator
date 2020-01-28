@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.codec;
 
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.util.ByteArray;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -27,7 +27,6 @@ public class GameDecoder extends ProtocolDecoderAdapter {
         AES.decrypt(decode);
         System.arraycopy(decode, 0, packet, 6, decode.length);
 
-        PacketReader reader = new PacketReader(packet);
-        out.write(reader);
+        out.write(new EndianReader(packet));
     }
 }

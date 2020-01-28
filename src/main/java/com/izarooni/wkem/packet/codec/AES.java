@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.codec;
 
-import com.izarooni.wkem.packet.accessor.LittleEndianAccessor;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 
 import static com.izarooni.wkem.util.ByteArray.toBEUnsignedInt;
 import static java.lang.Integer.toUnsignedLong;
@@ -367,12 +367,12 @@ public class AES {
         int nk = Key.length / 4;
 
         // a ByteBuffer reads in big endian maaaan...
-        LittleEndianAccessor key = new LittleEndianAccessor(Key);
-        LittleEndianAccessor enc = new LittleEndianAccessor(Encryption);
-        LittleEndianAccessor dec = new LittleEndianAccessor(Decryption);
+        EndianReader key = new EndianReader(Key);
+        EndianReader enc = new EndianReader(Encryption);
+        EndianReader dec = new EndianReader(Decryption);
 
         for (i = 0; i < nk; i++) {
-            enc.putInt(i * 4, (int) key.readUnsignedInt(i * 4));
+            enc.writeInt(i * 4, (int) key.readUnsignedInt(i * 4));
         }
         for (; i < 176 / 4; i++) {
             long t = enc.readUnsignedInt((i - 1) * 4);
@@ -380,7 +380,7 @@ public class AES {
                 t = toUnsignedLong(sub_w(rot_w(t))) ^ (Rcon[i / nk] << 24);
 
             long value = enc.readUnsignedInt((i - nk) * 4) ^ t;
-            enc.putInt(i * 4, (int) value);
+            enc.writeInt(i * 4, (int) value);
         }
         int n = 44;
         for (i = 0; i < n; i += 4) {
@@ -393,7 +393,7 @@ public class AES {
                             ^ td[2][SBox[(int) ((x >> 8) & 0xff)]]
                             ^ td[3][SBox[(int) (x & 0xff)]];
                 }
-                dec.putInt((i + j) * 4, (int) x);
+                dec.writeInt((i + j) * 4, (int) x);
             }
         }
     }
@@ -402,8 +402,8 @@ public class AES {
         long s0, s1, s2, s3,
                 t0 = 0, t1 = 0, t2 = 0, t3 = 0;
 
-        LittleEndianAccessor dec = new LittleEndianAccessor(Decryption);
-        LittleEndianAccessor packet = new LittleEndianAccessor(buffer);
+        EndianReader dec = new EndianReader(Decryption);
+        EndianReader packet = new EndianReader(buffer);
 
         for (int pos = 0; pos < buffer.length - (buffer.length % 16); pos += 16) {
             s0 = packet.readUnsignedInt(pos) ^ dec.readUnsignedInt(0);
@@ -466,10 +466,10 @@ public class AES {
                     (byte) SBox2[(int) t0 & 0xFF]};
             s3 = toBEUnsignedInt(temp);
 
-            packet.putInt(pos, (int) (s0 ^ dec.readUnsignedInt(k)));
-            packet.putInt(pos + 4, (int) (s1 ^ dec.readUnsignedInt(k + 4)));
-            packet.putInt(pos + 8, (int) (s2 ^ dec.readUnsignedInt(k + 8)));
-            packet.putInt(pos + 12, (int) (s3 ^ dec.readUnsignedInt(k + 12)));
+            packet.writeInt(pos, (int) (s0 ^ dec.readUnsignedInt(k)));
+            packet.writeInt(pos + 4, (int) (s1 ^ dec.readUnsignedInt(k + 4)));
+            packet.writeInt(pos + 8, (int) (s2 ^ dec.readUnsignedInt(k + 8)));
+            packet.writeInt(pos + 12, (int) (s3 ^ dec.readUnsignedInt(k + 12)));
         }
         System.arraycopy(packet.array(), 0, buffer, 0, buffer.length);
     }

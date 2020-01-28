@@ -7,13 +7,25 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author izarooni
  */
-public class LittleEndianWriter {
+public class EndianWriter {
 
     private static final Charset ASCII = StandardCharsets.US_ASCII;
     ByteArrayOutputStream baos;
 
-    LittleEndianWriter(int size) {
+    public EndianWriter() {
+        this(32);
+    }
+
+    public EndianWriter(int size) {
         baos = new ByteArrayOutputStream(size);
+    }
+
+    public byte[] array() {
+        return baos.toByteArray();
+    }
+
+    public int length() {
+        return baos.size();
     }
 
     public void write(byte[] b) {

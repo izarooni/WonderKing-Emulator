@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 
@@ -16,7 +16,7 @@ public class PlayerMoveRequest extends PacketRequest {
     private int flag3; // unsigned?
 
     @Override
-    public boolean process(PacketReader reader) {
+    public boolean process(EndianReader reader) {
         playerID = reader.readShort();
         flag1 = reader.readShort();
         location = new Vector2D(reader.readShort(), reader.readShort());

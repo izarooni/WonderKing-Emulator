@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public abstract class PacketRequest {
         getLogger().error("something went wrong", t);
     }
 
-    public abstract boolean process(PacketReader reader);
+    public abstract boolean process(EndianReader reader);
 
     public abstract void run();
 }

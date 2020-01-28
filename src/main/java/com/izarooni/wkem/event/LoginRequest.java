@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
-import com.izarooni.wkem.packet.accessor.PacketReader;
+import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.service.Backbone;
 
@@ -19,7 +19,7 @@ public class LoginRequest extends PacketRequest {
     }
 
     @Override
-    public boolean process(PacketReader reader) {
+    public boolean process(EndianReader reader) {
         username = reader.readAsciiString(20).trim();
         password = reader.readAsciiString(32).trim();
         return true;
