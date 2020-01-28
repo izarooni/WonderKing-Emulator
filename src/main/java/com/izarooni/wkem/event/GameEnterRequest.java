@@ -4,6 +4,7 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
+import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.service.Backbone;
 
@@ -54,7 +55,10 @@ public class GameEnterRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         user.setPlayer(selectedPlayer);
+        Map map = user.getChannel().getMap(selectedPlayer.getMapId());
         user.sendPacket(GamePacketCreator.getPlayerInfo(selectedPlayer));
+        user.sendPacket(GamePacketCreator.getPlayersInMap(map));
         user.sendPacket(GamePacketCreator.getGameEnter());
+        map.addEntity(selectedPlayer);
     }
 }

@@ -21,6 +21,7 @@ public class Channel {
     private final int port;
     private final NioSocketAcceptor socket;
     private final ConcurrentHashMap<Integer, Player> players;
+    private final ConcurrentHashMap<Integer, Map> maps;
 
     public Channel(int id, String address, int port, int capacity) throws IOException {
         this.id = id;
@@ -33,7 +34,8 @@ public class Channel {
         socket.getSessionConfig().setTcpNoDelay(true);
         socket.bind(new InetSocketAddress(address, port));
 
-        players = new ConcurrentHashMap<>((int) ((0.75 / 100) * capacity));
+        players = new ConcurrentHashMap<>((int) ((capacity / 0.75) + 1));
+        maps = new ConcurrentHashMap<>(130);
     }
 
     public int getId() {
@@ -54,5 +56,9 @@ public class Channel {
 
     public ConcurrentHashMap<Integer, Player> getPlayers() {
         return players;
+    }
+
+    public Map getMap(int mapID) {
+        return maps.computeIfAbsent(mapID, Map::new);
     }
 }

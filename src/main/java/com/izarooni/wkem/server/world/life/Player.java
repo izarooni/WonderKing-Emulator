@@ -2,6 +2,8 @@ package com.izarooni.wkem.server.world.life;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.server.world.Map;
+import com.izarooni.wkem.server.world.Physics;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.Item;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
@@ -32,6 +34,8 @@ public class Player extends Entity {
     private Vector2D location;
     private ArrayList<Item> items;
 
+    private Map map;
+
     public Player() {
         level = 1;
         hp = maxHp = 50;
@@ -45,10 +49,24 @@ public class Player extends Entity {
 
     @Override
     public void dispose() {
+
     }
 
     @Override
     public void encode(EndianWriter w) {
+        w.write(0);
+        w.write(0);
+        w.writeShort(id);
+        w.writeAsciiString(username, 20);
+        w.write(job);
+        w.write(gender);
+        w.writeShort(location.getX());
+        w.writeShort(location.getY());
+        encodeItemIDs(w, StorageType.Equipped, 20).clear();
+        encodeItemIDs(w, StorageType.EquippedCash, 20).clear();
+        w.writeFloat(Physics.XVelocity);
+        w.writeFloat(Physics.YVelocity);
+        w.skip(42);
     }
 
     public void encodeStats(EndianWriter w) {
@@ -75,11 +93,11 @@ public class Player extends Entity {
         encodeStats(w);
         w.writeInt(hp);
         w.writeInt(mp);
-        encodeItems(w, StorageType.Equipped, 20);
-        encodeItems(w, StorageType.EquippedCash, 20);
+        encodeItemStats(w, StorageType.Equipped, 20);
+        encodeItemStats(w, StorageType.EquippedCash, 20);
     }
 
-    public void encodeItems(EndianWriter w, StorageType type, int count) {
+    public HashMap<Short, Item> encodeItemIDs(EndianWriter w, StorageType type, int count) {
         HashMap<Short, Item> h = new HashMap<>();
         items.stream().filter(i -> i.getStorageType() == type)
                 .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
@@ -90,6 +108,11 @@ public class Player extends Entity {
                 w.writeShort(0);
             }
         }
+        return h;
+    }
+
+    public void encodeItemStats(EndianWriter w, StorageType type, int count) {
+        HashMap<Short, Item> h = encodeItemIDs(w, type, count);
         for (int i = 0; i < count; i++) {
             /*
             w.write(itemLevel);
@@ -112,9 +135,7 @@ public class Player extends Entity {
                 .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
 
         for (short bag = 0; bag < bags; bag++) {
-            final short start = (short) (20 * bag),
-                    end = (short) (20 * (bag + 1));
-
+            final short start = (short) (20 * bag), end = (short) (20 * (bag + 1));
             for (short key = start; key < end; key++) {
                 if (h.containsKey(key)) w.writeShort(h.get(key).getId());
                 else w.writeShort(0);
@@ -330,5 +351,13 @@ public class Player extends Entity {
 
     public void setItems(ArrayList<Item> items) {
         this.items = items;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
     }
 }

@@ -1,8 +1,7 @@
 package com.izarooni.wkem.server.world.life.meta.storage;
 
-import com.izarooni.wkem.io.DataReader;
+import com.izarooni.wkem.io.ItemFactory;
 import com.izarooni.wkem.io.meta.TemplateItem;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author izarooni
@@ -129,7 +128,7 @@ public class Item {
         this.id = id;
         this.quantity = quantity;
 
-        template = DataReader.getBaseItemData().get((long) id);
+        template = ItemFactory.getBaseItem(id);
         if (template == null) {
             throw new NullPointerException("invalid item: " + id);
         }

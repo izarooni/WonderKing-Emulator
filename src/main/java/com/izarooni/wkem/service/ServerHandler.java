@@ -66,7 +66,7 @@ public class ServerHandler extends IoHandlerAdapter {
         reader.skip(4);
         Class<? extends PacketRequest> handler = PacketOperations.handlerOf(header);
         if (handler == null) {
-            LOGGER.info("No handler for packet '{}'", header);
+            LOGGER.info("No handler for packet '{}'\r\n{}", header, reader.toString());
             return;
         }
         PacketRequest request = handler.getDeclaredConstructor().newInstance();

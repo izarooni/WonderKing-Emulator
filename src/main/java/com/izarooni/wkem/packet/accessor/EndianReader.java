@@ -2,6 +2,7 @@ package com.izarooni.wkem.packet.accessor;
 
 import com.izarooni.wkem.util.ByteArray;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -35,8 +36,8 @@ public class EndianReader {
         return ByteArray.toHex(buf);
     }
 
-    public String toHexString(boolean unsigned) {
-        return unsigned ? Arrays.toString(ByteArray.asUnsigned(buf)) : Arrays.toString(buf);
+    public String toAsciiString() {
+        return new String(buf, StandardCharsets.US_ASCII);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.izarooni.wkem.packet.magic;
 
 import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.server.world.Map;
+import com.izarooni.wkem.server.world.Physics;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
@@ -34,8 +36,8 @@ public class GamePacketCreator {
         w.write(0); // job 3
         w.write(0); // job 4
         w.writeLong(player.getZed()); // money
-        player.encodeItems(w, StorageType.Equipped, 20);
-        player.encodeItems(w, StorageType.EquippedCash, 20);
+        player.encodeItemStats(w, StorageType.Equipped, 20);
+        player.encodeItemStats(w, StorageType.EquippedCash, 20);
 
         w.skip(42);
 
@@ -75,8 +77,8 @@ public class GamePacketCreator {
         w.writeShort(0); // holy
         //endregion
 
-        w.writeFloat(2.8f);
-        w.writeFloat(16f);
+        w.writeFloat(Physics.XVelocity);
+        w.writeFloat(Physics.YVelocity);
         w.writeShort(0); // critical
         w.writeShort(0); // bonus stats
         w.skip(44);
@@ -139,6 +141,18 @@ public class GamePacketCreator {
         w.writeShort(location.getY());
         w.write(flag2);
         w.writeInt(flag3);
+        return w;
+    }
+
+    public static EndianWriter getPlayersInMap(Map map) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Game_Enter.Id);
+        w.write(0);
+        w.write(2);
+        w.writeShort(map.getPlayers().size());
+        for (Player player : map.getPlayers().values()) {
+            player.encode(w);
+        }
         return w;
     }
 }
