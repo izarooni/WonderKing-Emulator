@@ -515,6 +515,7 @@ public enum PacketOperations {
         Character_Delete.handler = PlayerDeleteRequest.class;
         Character_Select.handler = PlayerSelectRequest.class;
         Game_Enter.handler = GameEnterRequest.class;
+        Player_Move.handler = PlayerMoveRequest.class;
     }
 
     PacketOperations(int Id) {

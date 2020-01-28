@@ -69,7 +69,7 @@ public class Player extends Entity {
         //endregion
         w.write(gender);
         w.writeShort(level);
-        w.write(50); // exp as percentage
+        w.write(0); // exp as percentage
         encodeStats(w);
         w.writeInt(hp);
         w.writeInt(mp);

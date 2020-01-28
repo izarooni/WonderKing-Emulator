@@ -90,7 +90,7 @@ public class LittleEndianAccessor {
     }
 
     public void skip(int num) {
-        if (num + pos >= arr.length) {
+        if (num + pos > arr.length) {
             throw new IndexOutOfBoundsException(String.format("cannot skip %d bytes, %d remain", num, (arr.length - pos)));
         }
         for (int i = 0; i < num; i++) {

@@ -2,6 +2,7 @@ package com.izarooni.wkem.server.world;
 
 import com.izarooni.wkem.packet.codec.GameDecoder;
 import com.izarooni.wkem.packet.codec.GameEncoder;
+import com.izarooni.wkem.packet.codec.LoginEncoder;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.service.ServerHandler;
 import org.apache.mina.core.service.IoService;
@@ -33,7 +34,7 @@ public class Channel {
         this.port = port;
 
         socket = new NioSocketAcceptor();
-        socket.getFilterChain().addLast("codec", new ProtocolCodecFilter(new GameEncoder(), new GameDecoder()));
+        socket.getFilterChain().addLast("codec", new ProtocolCodecFilter(new LoginEncoder(), new GameDecoder()));
         socket.setHandler(new ServerHandler(this));
         socket.getSessionConfig().setTcpNoDelay(true);
         socket.bind(new InetSocketAddress(address, port));

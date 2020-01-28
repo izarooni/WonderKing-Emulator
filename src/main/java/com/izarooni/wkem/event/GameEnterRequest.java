@@ -22,13 +22,10 @@ public class GameEnterRequest extends PacketRequest {
 
         String accountUsername = reader.readAsciiString(20).trim();
         String password = reader.readAsciiString(32).trim();
-        byte loginPosition = reader.readByte();
+        reader.readByte();
+        int loginPosition = reader.readByte();
         String playerUsername = reader.readAsciiString(20);
-
-        if (loginPosition < 0 || loginPosition > 3) {
-            getLogger().warn("invalid login position: {}", loginPosition);
-            return false;
-        }
+        playerUsername = playerUsername.substring(0, playerUsername.indexOf('\0'));
 
         LoginPacketCreator result = user.login(accountUsername, password);
         Backbone.Users.put(accountUsername, user);
@@ -36,7 +33,12 @@ public class GameEnterRequest extends PacketRequest {
             getLogger().warn("incorrect credentials (acc_id: '{}', password: '{}')", accountUsername, password);
             return false;
         }
-        selectedPlayer = user.getPlayers()[loginPosition];
+        for (Player player : user.getPlayers()) {
+            if (player != null && player.getUsername().equals(playerUsername)) {
+                selectedPlayer = player;
+                break;
+            }
+        }
         if (selectedPlayer == null) {
             getLogger().warn("invalid character selection: {}", loginPosition);
             return false;
@@ -58,9 +60,9 @@ public class GameEnterRequest extends PacketRequest {
 
         PacketWriter w = new PacketWriter(32);
         w.writeShort(PacketOperations.Game_Enter.Id);
-        w.skip(5);
+        w.write(0);
         w.write(5);
-        w.skip(2);
+        w.write(0);
         user.sendPacket(w);
     }
 }

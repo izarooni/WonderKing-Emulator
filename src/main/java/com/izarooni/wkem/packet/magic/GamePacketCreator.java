@@ -14,19 +14,19 @@ public class GamePacketCreator {
     public static PacketWriter getEnterGame(Player player) {
         PacketWriter w = new PacketWriter(2000);
         w.writeShort(PacketOperations.Game_Enter.Id);
-        w.writeInt(0);
         w.write(0);
         w.write(1);
-        w.writeShort(player.getMapId()); // map
-        w.writeShort(player.getId()); // player ID
-        w.writeAsciiString(player.getUsername(), 20); // username
-        w.write(player.getJob()); // job
-        w.write(player.getLevel()); // level
-        w.writeInt(0); // ?
-        w.writeShort(player.getLocation().getX()); // x
-        w.writeShort(player.getLocation().getY()); // y
-        w.writeShort(player.getHp()); // hp
-        w.writeShort(player.getMp()); // mp
+        w.writeShort(player.getMapId());
+        w.writeShort(player.getId());
+        w.writeAsciiString(player.getUsername(), 20);
+        w.write(player.getJob());
+        w.write(player.getGender());
+        w.write(player.getLevel());
+        w.writeInt(0); // exp
+        w.writeShort(player.getLocation().getX());
+        w.writeShort(player.getLocation().getY());
+        w.writeShort(player.getHp());
+        w.writeShort(player.getMp());
         w.writeShort(1000);
         w.write(0); // job 2
         w.write(0); // job 3
