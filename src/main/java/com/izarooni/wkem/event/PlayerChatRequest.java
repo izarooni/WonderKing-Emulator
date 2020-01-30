@@ -14,10 +14,6 @@ public class PlayerChatRequest extends PacketRequest {
     @Override
     public boolean process(EndianReader reader) {
         byte length = reader.readByte();
-        if (reader.available() != 2 + length) {
-            // some issue when only a single char is sent
-            return false;
-        }
         playerID = reader.readShort();
         text = reader.readAsciiString(length);
         return true;
