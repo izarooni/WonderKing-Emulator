@@ -8,7 +8,7 @@
             </Filters>
             <PatternLayout pattern="%d{HH:mm:ss} [%t] %-4p %c{4.} - %msg%n"/>
         </Console>
-        <File name="File" fileName="errors.log">
+        <File name="File" fileName="errors.txt">
             <ThresholdFilter level="error" onMatch="accept" onMismatch="deny"/>
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>

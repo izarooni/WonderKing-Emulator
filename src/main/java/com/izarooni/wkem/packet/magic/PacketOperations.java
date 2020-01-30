@@ -519,6 +519,7 @@ public enum PacketOperations {
         Player_Restart.handler = PlayerRestartRequest.class;
         Player_Reconnect.handler = PlayerReconnectRequest.class;
         Chat_Text.handler = PlayerChatRequest.class;
+        Map_Change.handler = PlayerMapTransferRequest.class;
     }
 
     PacketOperations(int Id) {

@@ -60,9 +60,10 @@ public class LoginDecoder extends ProtocolDecoderAdapter {
         }
     }
 
+    // Referenced from [0002769A]
     private static void decode(byte[] b) {
         for (int i = 0; i < b.length; ++i) {
-            b[i] = (byte) (b[i] ^ (i ^ 3 * (254 - i)));
+            b[i] ^= i ^ (3 * (254 - i));
         }
     }
 }

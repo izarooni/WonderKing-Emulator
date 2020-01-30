@@ -10,7 +10,7 @@ Both channel and server ID starts at 0
 10002 + (channelID + (serverID * 15))
 ``` 
 
-## Startup Arguments
+## Developing
 Only one argument is mandatory when starting your server.
 ```$xslt
 -Dlog4j.configurationFile=log4j.xml

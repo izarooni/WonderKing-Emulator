@@ -2,14 +2,13 @@ package com.izarooni.wkem.packet.accessor;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author izarooni
  */
 public class EndianWriter {
 
-    private static final Charset ASCII = StandardCharsets.US_ASCII;
+    private static final Charset CodePage = Charset.forName("Windows-1252");
     ByteArrayOutputStream baos;
 
     public EndianWriter() {
@@ -64,7 +63,7 @@ public class EndianWriter {
         if (s == null) {
             throw new NullPointerException("Can't write a null string to the byte array");
         }
-        write(s.getBytes(ASCII));
+        write(s.getBytes(CodePage));
     }
 
     public void writeAsciiString(String s, int length) {

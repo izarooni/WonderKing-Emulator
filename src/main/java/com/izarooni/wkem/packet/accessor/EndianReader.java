@@ -2,7 +2,7 @@ package com.izarooni.wkem.packet.accessor;
 
 import com.izarooni.wkem.util.ByteArray;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
@@ -10,6 +10,7 @@ import java.util.Arrays;
  */
 public class EndianReader {
 
+    private static final String CodePage = "Windows-1252";
     private static final short UByte = 0xFF;
 
     private int index = 0; // read index of the byte array
@@ -37,7 +38,7 @@ public class EndianReader {
     }
 
     public String toAsciiString() {
-        return new String(buf, StandardCharsets.US_ASCII);
+        return new String(buf, Charset.forName(CodePage));
     }
 
     /**
@@ -48,33 +49,35 @@ public class EndianReader {
     }
 
     /**
-     * @return unsigned byte (int8)
-     */
-    int read() {
-        return (((int) buf[index++]) & UByte);
-    }
-
-    /**
      * @return signed byte (int8)
      */
     public byte readByte() {
-        return (byte) read();
+        return (byte) readByte(index++);
+    }
+
+    public int readByte(int i) {
+        return (((int) buf[i]) & UByte);
     }
 
     /**
      * @return signed short (int16)
      */
     public short readShort() {
-        return (short) (read() + (read() << 8));
+        return (short) (readByte(index++) + (readByte(index++) << 8));
     }
 
     /**
      * @return signed int (int32)
      */
     public int readInt() {
+        return readInt(index);
+    }
+
+    public int readInt(int i) {
         int ret = 0;
-        for (int i = 0; i < Integer.BYTES; i++) {
-            ret += read() << (i * 8);
+        for (int b = 0; b < Integer.BYTES; b++) {
+            ret += readByte(i + b) << (b * 8);
+            index++;
         }
         return ret;
     }
@@ -91,12 +94,16 @@ public class EndianReader {
      * @return unsigned int (int32)
      */
     public long readUnsignedInt(int index) {
-        int b1, b2, b3, b4;
-        b1 = (buf[index] & UByte);
-        b2 = (buf[index + 1] & UByte) << 8L;
-        b3 = (buf[index + 2] & UByte) << 16L;
-        b4 = (buf[index + 3] & UByte) << 24L;
-        return Integer.toUnsignedLong(b1 + b2 + b3 + b4);
+        return Integer.toUnsignedLong(
+                (readByte(index))
+                + (readByte(index + 1) << 8L)
+                + (readByte(index + 2) << 16L)
+                + (readByte(index + 3) << 24L));
+    }
+
+    //region these don't belong but are necessary for the AES shit; will make sense of it's belonging another time
+    public void writeByte(int index, byte value) {
+        buf[index] = value;
     }
 
     /**
@@ -109,6 +116,7 @@ public class EndianReader {
         buf[index + 2] = ((byte) ((value >>> 16) & UByte));
         buf[index + 3] = ((byte) ((value >>> 24) & UByte));
     }
+    //endregion
 
     /**
      * @return signed long (int64)
@@ -116,7 +124,7 @@ public class EndianReader {
     public long readLong() {
         long ret = 0;
         for (int i = 0; i < Long.BYTES; i++) {
-            ret += ((long) read()) << (i * 8);
+            ret += ((long) readByte(index += 1)) << (i * 8);
         }
         return ret;
     }
@@ -152,10 +160,6 @@ public class EndianReader {
     }
 
     public String readAsciiString(int n) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            sb.append((char) read());
-        }
-        return sb.toString();
+        return new String(read(n), Charset.forName(CodePage));
     }
 }

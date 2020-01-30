@@ -1,22 +1,30 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.packet.accessor.EndianReader;
+import com.izarooni.wkem.packet.magic.GamePacketCreator;
 
 /**
  * @author izarooni
  */
 public class PlayerChatRequest extends PacketRequest {
 
+    private short playerID;
+    private String text;
+
     @Override
     public boolean process(EndianReader reader) {
-        //   izarooni : aaaaaaaaaaaaaaaaaa½
-        // 3D 00 30 2E 00 00 1F 00 00 69 7A 61 72 6F 6F 6E 69 20 3A 20 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 61 9F BD
-        // failing to decode the last portion of the packet
-        getLogger().info(reader.readAsciiString(reader.available()));
+        byte length = reader.readByte();
+        if (reader.available() != 2 + length) {
+            // some issue when only a single char is sent
+            return false;
+        }
+        playerID = reader.readShort();
+        text = reader.readAsciiString(length);
         return true;
     }
 
     @Override
     public void run() {
+        getUser().sendPacket(GamePacketCreator.getChatText(playerID, text));
     }
 }

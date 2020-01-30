@@ -155,4 +155,13 @@ public class GamePacketCreator {
         }
         return w;
     }
+
+    public static EndianWriter getChatText(short playerID, String text) {
+        EndianWriter w = new EndianWriter(5 + text.length());
+        w.writeShort(PacketOperations.Chat_Text.Id);
+        w.write(text.length());
+        w.writeShort(playerID);
+        w.writeAsciiString(text);
+        return w;
+    }
 }

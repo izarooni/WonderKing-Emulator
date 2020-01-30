@@ -68,6 +68,7 @@ public enum LoginPacketCreator {
         return w;
     }
 
+    // Referenced from [004C24F0]
     public static EndianWriter getPlayerList(User user) {
         Channel channel = user.getChannel();
 

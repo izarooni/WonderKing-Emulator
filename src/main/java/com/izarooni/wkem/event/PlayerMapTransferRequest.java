@@ -5,18 +5,16 @@ import com.izarooni.wkem.packet.accessor.EndianReader;
 /**
  * @author izarooni
  */
-public class PlayerReconnectRequest extends PacketRequest {
-
-    private String username, password;
+public class PlayerMapTransferRequest extends PacketRequest {
 
     @Override
     public boolean process(EndianReader reader) {
-        username = reader.readAsciiString(20).trim();
-        getLogger().info(reader.toString());
-        return true;
+        short mapID = reader.readShort();
+        return false;
     }
 
     @Override
     public void run() {
+
     }
 }

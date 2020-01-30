@@ -20,7 +20,7 @@ public class PlayerNameCheckRequest extends PacketRequest {
     @Override
     public void run() {
         // todo username validation
-        getUser().sendPacket(LoginPacketCreator.getNameCheckResponse(LoginPacketCreator.LoginResponse_Ok));
+        getUser().sendPacket(LoginPacketCreator.getNameCheckResponse(LoginPacketCreator.NameCheckResponse_Ok));
         Player player = new Player();
         player.setUsername(username);
         getUser().setPlayer(player);

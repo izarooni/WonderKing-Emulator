@@ -78,6 +78,7 @@ public class Player extends Entity {
         w.writeShort(wisdom);
     }
 
+    // 132 bytes of player data
     public void encodeBasic(EndianWriter w) {
         w.writeInt(loginPosition);
         w.writeAsciiString(username, 20);
@@ -93,8 +94,8 @@ public class Player extends Entity {
         encodeStats(w);
         w.writeInt(hp);
         w.writeInt(mp);
-        encodeItemStats(w, StorageType.Equipped, 20);
-        encodeItemStats(w, StorageType.EquippedCash, 20);
+        encodeItemIDs(w, StorageType.Equipped, 20);
+        encodeItemIDs(w, StorageType.EquippedCash, 20);
     }
 
     public HashMap<Short, Item> encodeItemIDs(EndianWriter w, StorageType type, int count) {

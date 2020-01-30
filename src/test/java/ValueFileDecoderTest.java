@@ -9,7 +9,11 @@ public class ValueFileDecoderTest {
 
     public static void main(String[] args) throws Exception {
         File file = new File("value");
-        decryptFiles(file.listFiles());
+        // disable so maven doesn't re-decode .dat files??
+//        decryptFiles(file.listFiles());
+
+//        decryptFile(new File("value/baseitemdata.dat"));
+//        System.out.println("complete");
     }
 
     private static void decryptFiles(File[] files) throws IOException {
@@ -18,16 +22,20 @@ public class ValueFileDecoderTest {
                 decryptFiles(file.listFiles());
                 continue;
             }
-            byte[] buf;
-            try (FileInputStream in = DataReader.openFile(file)) {
-                buf = in.readAllBytes();
-                DataReader.magic_xor(buf, buf.length);
-            }
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                out.write(buf);
-                out.flush();
-            }
+            decryptFile(file);
             System.out.printf("Updated file '%s'\r\n", file.toString());
+        }
+    }
+
+    private static void decryptFile(File file) throws IOException {
+        byte[] buf;
+        try (FileInputStream in = DataReader.openFile(file)) {
+            buf = in.readAllBytes();
+            DataReader.magic_xor(buf, buf.length);
+        }
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            out.write(buf);
+            out.flush();
         }
     }
 }
