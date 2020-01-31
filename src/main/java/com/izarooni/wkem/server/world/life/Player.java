@@ -49,7 +49,9 @@ public class Player extends Entity {
 
     @Override
     public void dispose() {
-
+        if (map != null) {
+            map.removeEntity(this);
+        }
     }
 
     @Override // 160 bytes

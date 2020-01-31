@@ -124,6 +124,28 @@ public class GamePacketCreator {
         return w;
     }
 
+    public static EndianWriter getPlayerDash(short playerID, short a, byte b, byte c, Vector2D location) {
+        EndianWriter w = new EndianWriter(8);
+        w.writeShort(PacketOperations.Player_Dash.Id);
+        w.writeShort(playerID);
+        w.writeShort(a);
+        w.write(b);
+        w.write(c);
+        w.writeShort(location.getX());
+        w.writeShort(location.getY());
+        return w;
+    }
+
+    public static EndianWriter getPlayerJump(short playerID, short a, short b, long c) {
+        EndianWriter w = new EndianWriter(16);
+        w.writeShort(PacketOperations.Player_Jump.Id);
+        w.writeShort(playerID);
+        w.writeShort(a);
+        w.writeShort(b);
+        w.writeLong(c);
+        return w;
+    }
+
     /**
      * @param playerID unique ID of the moving player
      * @param flag1    int16
@@ -133,7 +155,7 @@ public class GamePacketCreator {
     public static EndianWriter getPlayerMove(int playerID,
                                              short flag1, short flag2, int flag3,
                                              Vector2D location) {
-        EndianWriter w = new EndianWriter();
+        EndianWriter w = new EndianWriter(15);
         w.writeShort(PacketOperations.Player_Move.Id);
         w.writeShort(playerID);
         w.writeShort(flag1);
@@ -145,12 +167,14 @@ public class GamePacketCreator {
     }
 
     public static EndianWriter getPlayersInMap(Map map) {
-        EndianWriter w = new EndianWriter();
+        int npSize = map.getPlayers().size();
+
+        EndianWriter w = new EndianWriter(6 + (npSize * 160));
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
         w.write(2);
 
-        w.writeShort(map.getPlayers().size());
+        w.writeShort(npSize);
         for (Player player : map.getPlayers().values()) {
             player.encode(w);
         }
@@ -167,7 +191,7 @@ public class GamePacketCreator {
     }
 
     public static EndianWriter getPlayerAppear(Player player) {
-        EndianWriter w = new EndianWriter();
+        EndianWriter w = new EndianWriter(3);
         w.writeShort(PacketOperations.Player_Appear.Id);
         player.encode(w);
         return w;
@@ -175,7 +199,7 @@ public class GamePacketCreator {
 
 
     public static EndianWriter getPlayerDisappear(Player player) {
-        EndianWriter w = new EndianWriter();
+        EndianWriter w = new EndianWriter(6);
         w.writeShort(PacketOperations.Player_Disappear.Id);
         w.writeShort(player.getId());
         w.writeShort(0);
@@ -184,7 +208,7 @@ public class GamePacketCreator {
 
     // [00055320]
     public static EndianWriter getPlayerMapTransferFailed() {
-        EndianWriter w = new EndianWriter();
+        EndianWriter w = new EndianWriter(3);
         w.writeShort(PacketOperations.Map_Change.Id);
         w.write(4);
         return w;
@@ -192,7 +216,9 @@ public class GamePacketCreator {
 
     // [00055320]
     public static EndianWriter getPlayerMapTransfer(Player player, Map map) {
-        EndianWriter w = new EndianWriter();
+        int npSize = map.getPlayers().size();
+
+        EndianWriter w = new EndianWriter(14 + (npSize * 160));
         w.writeShort(PacketOperations.Map_Change.Id);
         w.write(0);
         w.write(2);
@@ -203,7 +229,7 @@ public class GamePacketCreator {
         w.writeShort(player.getLocation().getX());
         w.writeShort(player.getLocation().getY());
 
-        w.writeShort(map.getPlayers().size());
+        w.writeShort(npSize);
         for (Player players : map.getPlayers().values()) {
             players.encode(w);
         }

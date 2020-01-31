@@ -96,9 +96,9 @@ public class EndianReader {
     public long readUnsignedInt(int index) {
         return Integer.toUnsignedLong(
                 (readByte(index))
-                + (readByte(index + 1) << 8L)
-                + (readByte(index + 2) << 16L)
-                + (readByte(index + 3) << 24L));
+                        + (readByte(index + 1) << 8L)
+                        + (readByte(index + 2) << 16L)
+                        + (readByte(index + 3) << 24L));
     }
 
     //region these don't belong but are necessary for the AES shit; will make sense of it's belonging another time
@@ -122,11 +122,14 @@ public class EndianReader {
      * @return signed long (int64)
      */
     public long readLong() {
-        long ret = 0;
-        for (int i = 0; i < Long.BYTES; i++) {
-            ret += ((long) readByte(index += 1)) << (i * 8);
-        }
-        return ret;
+        return (readByte(index))
+                + (readByte(index + 1) << 8L)
+                + (readByte(index + 2) << 16L)
+                + (readByte(index + 3) << 24L)
+                + (((long) readByte(index + 4)) << 32L)
+                + (((long) readByte(index + 5)) << 40L)
+                + (((long) readByte(index + 6)) << 48L)
+                + (((long) readByte(index + 7)) << 56L);
     }
 
     /**
