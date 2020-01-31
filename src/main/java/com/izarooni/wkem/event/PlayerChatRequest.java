@@ -42,6 +42,6 @@ public class PlayerChatRequest extends PacketRequest {
             return;
         }
 
-        user.sendPacket(GamePacketCreator.getChatText(playerID, text));
+        player.getMap().sendPacket(GamePacketCreator.getChatText(playerID, text));
     }
 }
