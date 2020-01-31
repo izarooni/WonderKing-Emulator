@@ -3,20 +3,20 @@ package com.izarooni.wkem.server.world;
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.io.MapFactory;
 import com.izarooni.wkem.io.meta.TemplateMap;
-import com.izarooni.wkem.io.meta.TemplateMapPortal;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.server.world.life.Entity;
 import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.util.PacketAnnouncer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * @author izarooni
  */
-public class Map {
+public class Map implements PacketAnnouncer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
 
@@ -30,6 +30,11 @@ public class Map {
 
         template = MapFactory.get(id);
         players = new ConcurrentHashMap<>(10);
+    }
+
+    @Override
+    public Stream<User> getUsers() {
+        return players.values().stream().map(Player::getUser);
     }
 
     public int getId() {
@@ -53,12 +58,12 @@ public class Map {
             oldMap.removeEntity(player);
             player.setMap(this);
             player.setMapId(getId());
-            players.put(player.getId(), player);
 
-            user.sendPacket(GamePacketCreator.getPlayersInMap(this));
+            sendPacket(GamePacketCreator.getPlayerAppear(player));
             user.sendPacket(GamePacketCreator.getPlayerMapTransfer(player, this));
             user.sendPacket(GamePacketCreator.getGameEnter());
-            LOGGER.info("'{}' moved to map '{}'", player.getUsername(), template.toString());
+
+            players.put(player.getId(), player);
         }
     }
 
@@ -67,7 +72,8 @@ public class Map {
             Player player = (Player) entity;
             players.remove(player.getId());
             player.setMap(null);
-            LOGGER.info("'{}' left map '{}'", player.getUsername(), template.toString());
+
+            sendPacket(GamePacketCreator.getPlayerDisappear(player));
         }
     }
 }

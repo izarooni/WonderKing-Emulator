@@ -149,6 +149,7 @@ public class GamePacketCreator {
         w.writeShort(PacketOperations.Game_Enter.Id);
         w.write(0);
         w.write(2);
+
         w.writeShort(map.getPlayers().size());
         for (Player player : map.getPlayers().values()) {
             player.encode(w);
@@ -165,6 +166,23 @@ public class GamePacketCreator {
         return w;
     }
 
+    public static EndianWriter getPlayerAppear(Player player) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Player_Appear.Id);
+        player.encode(w);
+        return w;
+    }
+
+
+    public static EndianWriter getPlayerDisappear(Player player) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Player_Disappear.Id);
+        w.writeShort(player.getId());
+        w.writeShort(0);
+        return w;
+    }
+
+    // [00055320]
     public static EndianWriter getPlayerMapTransferFailed() {
         EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Map_Change.Id);
@@ -172,6 +190,7 @@ public class GamePacketCreator {
         return w;
     }
 
+    // [00055320]
     public static EndianWriter getPlayerMapTransfer(Player player, Map map) {
         EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Map_Change.Id);
@@ -186,38 +205,7 @@ public class GamePacketCreator {
 
         w.writeShort(map.getPlayers().size());
         for (Player players : map.getPlayers().values()) {
-            // 160 bytes of player data
-            w.writeAsciiString(players.getUsername(), 20);
-            w.writeShort(players.getId());
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-            w.writeInt(0);
-
-            w.writeShort(0);
-            w.writeShort(0);
+            players.encode(w);
         }
         return w;
     }

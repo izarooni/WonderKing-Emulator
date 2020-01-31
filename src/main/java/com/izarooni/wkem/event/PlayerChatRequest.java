@@ -28,17 +28,18 @@ public class PlayerChatRequest extends PacketRequest {
         Player player = user.getPlayer();
 
         String cmd = text.split(" : ")[1];
-        if (cmd.startsWith("/map")) {
-            String[] sp = cmd.split(" ");
-            int mapID = Integer.parseInt(sp[1]);
+        String[] args = cmd.split(" ");
+        if (cmd.startsWith("/m")) {
+            int mapID = Integer.parseInt(args[1]);
             Map map = user.getChannel().getMap(mapID);
-            if (map == null) {
-                return;
+            if (map != null) {
+                map.addEntity(player);
             }
-            map.addEntity(player);
             return;
         } else if (cmd.equalsIgnoreCase("/whereami")) {
             text = String.format("You are in map: '%s'", player.getMap().getTemplate().name);
+        } else if (cmd.equalsIgnoreCase("/test")) {
+            return;
         }
 
         user.sendPacket(GamePacketCreator.getChatText(playerID, text));

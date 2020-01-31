@@ -6,10 +6,14 @@ import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.storage.Item;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author izarooni
  */
 public class PlayerCreateRequest extends PacketRequest {
+
+    private static final AtomicInteger UID = new AtomicInteger(1);
 
     private byte loginPosition;
     private byte job, gender;
@@ -53,6 +57,7 @@ public class PlayerCreateRequest extends PacketRequest {
         shirt = (short) ((gender - 1) * 3 + shirt + 49);
         pants = (short) ((gender - 1) * 3 + pants + 58);
 
+        player.setId(UID.getAndIncrement());
         player.setLoginPosition(loginPosition);
         player.setHair(hair);
         player.setEyes(eyes);

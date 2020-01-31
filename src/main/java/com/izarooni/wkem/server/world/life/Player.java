@@ -52,7 +52,7 @@ public class Player extends Entity {
 
     }
 
-    @Override
+    @Override // 160 bytes
     public void encode(EndianWriter w) {
         w.write(0);
         w.write(0);

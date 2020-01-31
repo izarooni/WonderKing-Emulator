@@ -45,7 +45,7 @@ public enum PacketOperations {
     Unk0x0026(38),
     Unk0x0027(39),
     Player_Appear(40),
-    Player_Leave(41),
+    Player_Disappear(41),
     NPC_ReSpawn(42),
     NPC_Die(43),
     Item_Spawn(44),
