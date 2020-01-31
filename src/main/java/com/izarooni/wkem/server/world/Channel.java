@@ -32,7 +32,7 @@ public class Channel {
         socket.getFilterChain().addLast("codec", new ProtocolCodecFilter(new LoginEncoder(), new GameDecoder()));
         socket.setHandler(new ServerHandler(this));
         socket.getSessionConfig().setTcpNoDelay(true);
-        socket.bind(new InetSocketAddress(address, port));
+        socket.bind(new InetSocketAddress(port));
 
         players = new ConcurrentHashMap<>((int) ((capacity / 0.75) + 1));
         maps = new ConcurrentHashMap<>(130);

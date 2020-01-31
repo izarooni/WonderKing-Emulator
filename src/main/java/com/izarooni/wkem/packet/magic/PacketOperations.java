@@ -52,7 +52,7 @@ public enum PacketOperations {
     Item_Disappear(45),
     Damage(46),
     Player_Update2(47),
-    Player_Smiles(48),
+    Player_Emote(48),
     Item_Pickup(49),
     Player_EXP_Level(50),
     Player_Death(51),
@@ -322,7 +322,7 @@ public enum PacketOperations {
     Unk0x013C(316),
     Unk0x013D(317),
     Attraction(318),
-    Player_InfoA(319),
+    Player_RightClick(319),
     Give_Fame(320),
     Update_Fame(321),
     ReceiveFame(322),
@@ -387,7 +387,7 @@ public enum PacketOperations {
     Unk0x017D(381),
     Unk0x017E(382),
     Unk0x017F(383),
-    Player_InfoB(384),
+    Player_ViewInfo(384),
     Unk0x0181(385),
     Unk0x0182(386),
     Unk0x0183(387),
@@ -522,6 +522,8 @@ public enum PacketOperations {
         Player_Reconnect.handler = PlayerReconnectRequest.class;
         Chat_Text.handler = PlayerChatRequest.class;
         Map_Change.handler = PlayerMapTransferRequest.class;
+        Quit.handler = PlayerQuitRequest.class;
+        Player_Emote.handler = PlayerEmoteRequest.class;
     }
 
     PacketOperations(int Id) {

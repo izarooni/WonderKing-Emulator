@@ -28,7 +28,7 @@ public class Backbone {
     private static final String ServerAddress = "127.0.0.1";
     private static final int ServerPort = 10001;
     //endregion
-    public  static final HashMap<String, User> Users = new HashMap<>(5);
+    public static final HashMap<String, User> Users = new HashMap<>(5);
     //endregion
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Backbone.class);
@@ -53,7 +53,7 @@ public class Backbone {
         NioSocketAcceptor server = new NioSocketAcceptor();
         server.getFilterChain().addLast("codec", new ProtocolCodecFilter(new LoginEncoder(), new LoginDecoder()));
         server.setHandler(new ServerHandler(null));
-        server.bind(new InetSocketAddress(ServerAddress, ServerPort));
+        server.bind(new InetSocketAddress(ServerPort));
         LOGGER.info("Server bound to {}:{}", ServerAddress, ServerPort);
     }
 

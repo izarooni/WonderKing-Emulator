@@ -15,6 +15,14 @@ public class GamePacketCreator {
     private GamePacketCreator() {
     }
 
+    public static EndianWriter getPlayerEmote(short playerID, byte emote) {
+        EndianWriter w = new EndianWriter(5);
+        w.writeShort(PacketOperations.Player_Emote.Id);
+        w.write(emote);
+        w.writeShort(playerID);
+        return w;
+    }
+
     public static EndianWriter getPlayerInfo(Player player) {
         EndianWriter w = new EndianWriter(2000);
         w.writeShort(PacketOperations.Game_Enter.Id);

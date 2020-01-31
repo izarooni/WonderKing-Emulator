@@ -3,6 +3,7 @@ package com.izarooni.wkem.server.world;
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.io.MapFactory;
 import com.izarooni.wkem.io.meta.TemplateMap;
+import com.izarooni.wkem.io.meta.TemplateMapPortal;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.server.world.life.Entity;
 import com.izarooni.wkem.server.world.life.Player;
@@ -10,7 +11,10 @@ import com.izarooni.wkem.util.PacketAnnouncer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -47,6 +51,10 @@ public class Map implements PacketAnnouncer {
 
     public ConcurrentHashMap<Integer, Player> getPlayers() {
         return players;
+    }
+
+    public Optional<TemplateMapPortal> findPortal(Predicate<TemplateMapPortal> p) {
+        return template.portals.stream().filter(p).findFirst();
     }
 
     public void addEntity(Entity entity) {

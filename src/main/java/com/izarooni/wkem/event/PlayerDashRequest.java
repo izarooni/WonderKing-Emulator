@@ -18,11 +18,16 @@ public class PlayerDashRequest extends PacketRequest {
 
     @Override
     public boolean process(EndianReader reader) {
-        playerID = reader.readShort(); // 02 00
-        a = reader.readShort(); // 8C 00
-        b = reader.readByte(); // 01
-        c = reader.readByte(); // 01
-        location = new Vector2D(reader.readShort(), reader.readShort()); // 99 01, C3 02
+        playerID = reader.readShort();
+
+        if (playerID != getUser().getPlayer().getId()) {
+            return false;
+        }
+
+        a = reader.readShort();
+        b = reader.readByte();
+        c = reader.readByte();
+        location = new Vector2D(reader.readShort(), reader.readShort());
         return true;
     }
 

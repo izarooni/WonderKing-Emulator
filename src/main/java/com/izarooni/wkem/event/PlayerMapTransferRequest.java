@@ -4,7 +4,6 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.io.meta.TemplateMapPortal;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
-import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.life.Player;
 
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class PlayerMapTransferRequest extends PacketRequest {
         User user = getUser();
         Player player = user.getPlayer();
 
-        Optional<TemplateMapPortal> portal = player.getMap().getTemplate().portals.stream().filter(p -> p.destinationID == mapID).findFirst();
+        Optional<TemplateMapPortal> portal = player.getMap().findPortal(p -> p.destinationID == mapID);
         if (portal.isPresent()) {
             portal.get().enter(player);
         } else {

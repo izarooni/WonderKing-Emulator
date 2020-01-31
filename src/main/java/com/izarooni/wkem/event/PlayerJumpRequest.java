@@ -17,6 +17,11 @@ public class PlayerJumpRequest extends PacketRequest {
     @Override
     public boolean process(EndianReader reader) {
         playerID = reader.readShort();
+
+        if (playerID != getUser().getPlayer().getId()) {
+            return false;
+        }
+
         jumpAction = reader.readShort();
         b = reader.readShort();
         c = reader.readLong();

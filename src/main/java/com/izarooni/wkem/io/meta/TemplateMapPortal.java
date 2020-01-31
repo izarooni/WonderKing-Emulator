@@ -24,7 +24,7 @@ public class TemplateMapPortal {
         Map oldMap = player.getMap();
         Map newMap = player.getUser().getChannel().getMap(destinationID);
 
-        Optional<TemplateMapPortal> portal = newMap.getTemplate().portals.stream().filter(p -> p.destinationID == oldMap.getId()).findFirst();
+        Optional<TemplateMapPortal> portal = newMap.findPortal(p -> p.destinationID == oldMap.getId());
         if (portal.isPresent()) {
             player.getLocation().set(portal.get().location);
             newMap.addEntity(player);

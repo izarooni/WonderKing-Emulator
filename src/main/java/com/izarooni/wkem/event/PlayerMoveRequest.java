@@ -19,6 +19,11 @@ public class PlayerMoveRequest extends PacketRequest {
     @Override
     public boolean process(EndianReader reader) {
         playerID = reader.readShort();
+
+        if (playerID != getUser().getPlayer().getId()) {
+            return false;
+        }
+
         flag1 = reader.readShort();
         location = new Vector2D(reader.readShort(), reader.readShort());
         flag2 = reader.readByte();
