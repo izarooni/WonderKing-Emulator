@@ -1,12 +1,16 @@
 package com.izarooni.wkem.server.world;
 
+import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.io.MapFactory;
 import com.izarooni.wkem.io.meta.TemplateMap;
+import com.izarooni.wkem.io.meta.TemplateMapPortal;
+import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.server.world.life.Entity;
 import com.izarooni.wkem.server.world.life.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,8 +47,17 @@ public class Map {
     public void addEntity(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            players.put(player.getId(), player);
+            User user = player.getUser();
+
+            Map oldMap = player.getMap();
+            oldMap.removeEntity(player);
             player.setMap(this);
+            player.setMapId(getId());
+            players.put(player.getId(), player);
+
+            user.sendPacket(GamePacketCreator.getPlayersInMap(this));
+            user.sendPacket(GamePacketCreator.getPlayerMapTransfer(player, this));
+            user.sendPacket(GamePacketCreator.getGameEnter());
             LOGGER.info("'{}' moved to map '{}'", player.getUsername(), template.toString());
         }
     }

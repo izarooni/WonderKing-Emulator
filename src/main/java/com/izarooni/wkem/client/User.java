@@ -60,7 +60,10 @@ public class User implements Disposable {
         User user = Backbone.Users.get(username);
         if (user != null) {
             if (user.password.equals(password)) {
-                System.arraycopy(user.players, 0, players, 0, players.length);
+                for (int i = 0; i < user.players.length; i++) {
+                    players[i] = user.players[i];
+                    if (players[i] != null) players[i].setUser(this);
+                }
                 user.dispose();
             } else {
                 result = LoginPacketCreator.LoginResponse_IncorrectPassword;

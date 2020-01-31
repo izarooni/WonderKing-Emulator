@@ -164,4 +164,61 @@ public class GamePacketCreator {
         w.writeAsciiString(text);
         return w;
     }
+
+    public static EndianWriter getPlayerMapTransferFailed() {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Map_Change.Id);
+        w.write(4);
+        return w;
+    }
+
+    public static EndianWriter getPlayerMapTransfer(Player player, Map map) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Map_Change.Id);
+        w.write(0);
+        w.write(2);
+
+        w.writeShort(map.getId());
+
+        w.writeShort(player.getId());
+        w.writeShort(player.getLocation().getX());
+        w.writeShort(player.getLocation().getY());
+
+        w.writeShort(map.getPlayers().size());
+        for (Player players : map.getPlayers().values()) {
+            // 160 bytes of player data
+            w.writeAsciiString(players.getUsername(), 20);
+            w.writeShort(players.getId());
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeInt(0);
+
+            w.writeShort(0);
+            w.writeShort(0);
+        }
+        return w;
+    }
 }

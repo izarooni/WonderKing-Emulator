@@ -55,10 +55,10 @@ public class GameEnterRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         user.setPlayer(selectedPlayer);
-        Map map = user.getChannel().getMap(selectedPlayer.getMapId());
+
         user.sendPacket(GamePacketCreator.getPlayerInfo(selectedPlayer));
-        user.sendPacket(GamePacketCreator.getPlayersInMap(map));
-        user.sendPacket(GamePacketCreator.getGameEnter());
+        Map map = user.getChannel().getMap(selectedPlayer.getMapId());
+        selectedPlayer.setMap(map);
         map.addEntity(selectedPlayer);
     }
 }

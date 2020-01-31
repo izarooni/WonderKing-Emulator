@@ -1,7 +1,10 @@
 package com.izarooni.wkem.event;
 
+import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
+import com.izarooni.wkem.server.world.Map;
+import com.izarooni.wkem.server.world.life.Player;
 
 /**
  * @author izarooni
@@ -21,6 +24,23 @@ public class PlayerChatRequest extends PacketRequest {
 
     @Override
     public void run() {
-        getUser().sendPacket(GamePacketCreator.getChatText(playerID, text));
+        User user = getUser();
+        Player player = user.getPlayer();
+
+        String cmd = text.split(" : ")[1];
+        if (cmd.startsWith("/map")) {
+            String[] sp = cmd.split(" ");
+            int mapID = Integer.parseInt(sp[1]);
+            Map map = user.getChannel().getMap(mapID);
+            if (map == null) {
+                return;
+            }
+            map.addEntity(player);
+            return;
+        } else if (cmd.equalsIgnoreCase("/whereami")) {
+            text = String.format("You are in map: '%s'", player.getMap().getTemplate().name);
+        }
+
+        user.sendPacket(GamePacketCreator.getChatText(playerID, text));
     }
 }
