@@ -20,30 +20,28 @@ public class Player extends Entity {
     private int id;
     private String username;
     private long exp;
-    private int hp, maxHp;
-    private int mp, maxMp;
     private short hair, eyes;
     private short str, dex, $int, luk;
     private short vitality, wisdom;
     private int mapId;
     private int zed;
+    private int attraction;
     private byte loginPosition;
     private byte level;
     private byte job;
     private byte gender;
-    private Vector2D location;
     private ArrayList<Item> items;
 
     private Map map;
 
     public Player() {
         level = 1;
-        hp = maxHp = 50;
-        mp = maxMp = 50;
-        // 300 - tutorial map
-        // 901 - event map
-        mapId = 901;
-        location = new Vector2D(113, 0);
+        setHp(50);
+        setMaxHp(50);
+        setMp(50);
+        setMaxMp(50);
+        mapId = 300;
+        setLocation(new Vector2D(113, 0));
         items = new ArrayList<>(30);
     }
 
@@ -56,14 +54,13 @@ public class Player extends Entity {
 
     @Override // 160 bytes
     public void encode(EndianWriter w) {
-        w.write(0);
-        w.write(0);
+        w.writeShort(getObjectID());
         w.writeShort(id);
         w.writeAsciiString(username, 20);
         w.write(job);
         w.write(gender);
-        w.writeShort(location.getX());
-        w.writeShort(location.getY());
+        w.writeShort(getLocation().getX());
+        w.writeShort(getLocation().getY());
         encodeItemIDs(w, StorageType.Equipped, 20).clear();
         encodeItemIDs(w, StorageType.EquippedCash, 20).clear();
         w.writeFloat(Physics.XVelocity);
@@ -94,8 +91,8 @@ public class Player extends Entity {
         w.writeShort(level);
         w.write(0); // exp as percentage
         encodeStats(w);
-        w.writeInt(hp);
-        w.writeInt(mp);
+        w.writeInt(getHp());
+        w.writeInt(getMp());
         encodeItemIDs(w, StorageType.Equipped, 20);
         encodeItemIDs(w, StorageType.EquippedCash, 20);
     }
@@ -196,38 +193,6 @@ public class Player extends Entity {
         this.exp = exp;
     }
 
-    public int getHp() {
-        return hp;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
-    }
-
-    public int getMp() {
-        return mp;
-    }
-
-    public void setMp(int mp) {
-        this.mp = mp;
-    }
-
-    public int getMaxMp() {
-        return maxMp;
-    }
-
-    public void setMaxMp(int maxMp) {
-        this.maxMp = maxMp;
-    }
-
     public short getHair() {
         return hair;
     }
@@ -308,6 +273,14 @@ public class Player extends Entity {
         this.zed = zed;
     }
 
+    public int getAttraction() {
+        return attraction;
+    }
+
+    public void setAttraction(int attraction) {
+        this.attraction = attraction;
+    }
+
     public byte getLoginPosition() {
         return loginPosition;
     }
@@ -338,14 +311,6 @@ public class Player extends Entity {
 
     public void setGender(byte gender) {
         this.gender = gender;
-    }
-
-    public Vector2D getLocation() {
-        return location;
-    }
-
-    public void setLocation(Vector2D location) {
-        this.location = location;
     }
 
     public ArrayList<Item> getItems() {

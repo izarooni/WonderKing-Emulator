@@ -1,8 +1,10 @@
 package com.izarooni.wkem.packet.magic;
 
+import com.izarooni.wkem.io.meta.TemplateSpawnPoint;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
+import com.izarooni.wkem.server.world.life.Npc;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
@@ -29,6 +31,8 @@ public class GamePacketCreator {
         w.write(0);
         w.write(1);
         w.writeShort(player.getMapId());
+
+        // 732 bytes
         w.writeShort(player.getId());
         w.writeAsciiString(player.getUsername(), 20);
         w.write(player.getJob());
@@ -160,9 +164,7 @@ public class GamePacketCreator {
      * @param flag2    unsigned byte
      * @param flag3    int32
      */
-    public static EndianWriter getPlayerMove(int playerID,
-                                             short flag1, short flag2, int flag3,
-                                             Vector2D location) {
+    public static EndianWriter getPlayerMove(int playerID, short flag1, short flag2, int flag3, Vector2D location) {
         EndianWriter w = new EndianWriter(15);
         w.writeShort(PacketOperations.Player_Move.Id);
         w.writeShort(playerID);
@@ -171,6 +173,32 @@ public class GamePacketCreator {
         w.writeShort(location.getY());
         w.write(flag2);
         w.writeInt(flag3);
+        return w;
+    }
+
+    // [0004CF810]
+    public static EndianWriter getPlayerViewInfo(Player player) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Player_ViewInfo.Id);
+        w.write(player == null ? 1 : 0);
+        if (player != null) {
+            // 353 bytes?
+            w.writeAsciiString(player.getUsername(), 20);
+            w.writeShort(player.getLevel());
+            w.write(player.getJob());
+            w.write(0);
+            w.write(0);
+            w.write(0); // 25
+            w.writeShort(player.getMapId()); // 27
+            w.skip(17); // guild name - 44
+            w.write(0); // guild title - 45
+            w.writeInt(player.getAttraction()); // 46
+//            w.nCopies((byte) 0, 303);
+//            for (int i = 0; i < 16; i++) {
+//                w.writeShort(1);
+//                w.write(0);
+//            }
+        }
         return w;
     }
 
@@ -241,6 +269,27 @@ public class GamePacketCreator {
         for (Player players : map.getPlayers().values()) {
             players.encode(w);
         }
+        return w;
+    }
+
+    // [0004436F0]
+    public static EndianWriter getPlayerAttraction(Player player) {
+        EndianWriter w = new EndianWriter(13);
+        w.writeShort(PacketOperations.Player_RightClick.Id);
+        w.write(player == null ? 1 : 0);
+        if (player == null) {
+            return w;
+        }
+        w.writeInt(player.getAttraction()); //      dword_99188C
+        w.writeInt(0); // another points system? dword_991890
+        w.writeShort(player.getLevel());
+        return w;
+    }
+
+    public static EndianWriter getNpcAppear(Npc npc) {
+        EndianWriter w = new EndianWriter(69);
+        w.writeShort(PacketOperations.NPC_ReSpawn.Id);
+        npc.encode(w);
         return w;
     }
 }

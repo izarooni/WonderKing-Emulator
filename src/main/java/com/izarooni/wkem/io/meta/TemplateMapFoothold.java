@@ -22,4 +22,9 @@ public class TemplateMapFoothold {
     public int direction;
     public long[] empty;
     public Rectangle area;
+
+    @Override
+    public String toString() {
+        return String.format("TemplateMapFoothold{originLocation=%s, incX=%d, incY=%d, direction=%d, area=%s}", originLocation, incX, incY, direction, area);
+    }
 }

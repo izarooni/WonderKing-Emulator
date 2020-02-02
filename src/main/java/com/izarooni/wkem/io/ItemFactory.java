@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * @author izarooni
@@ -14,6 +16,10 @@ import java.util.HashMap;
 public class ItemFactory {
 
     static HashMap<Long, TemplateItem> baseItemData;
+
+    public static Stream<TemplateItem> findItems(String name) {
+        return baseItemData.values().stream().filter(i -> Pattern.compile(name, Pattern.CASE_INSENSITIVE).matcher(i.name).find());
+    }
 
     public static TemplateItem getBaseItem(short itemID) {
         return baseItemData.get((long) itemID);

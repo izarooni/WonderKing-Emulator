@@ -76,7 +76,7 @@ public class ServerHandler extends IoHandlerAdapter {
                 request.run();
             }
         } catch (Throwable t) {
-            request.exception(t);
+            request.exception(new RuntimeException(reader.toString(), t));
         }
     }
 }

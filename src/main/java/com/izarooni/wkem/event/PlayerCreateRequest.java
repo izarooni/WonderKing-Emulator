@@ -102,9 +102,8 @@ public class PlayerCreateRequest extends PacketRequest {
         player.getItems().add(new Item((short) 767)); // (GM) uniform shoes
         player.getItems().add(new Item((short) 763)); // (GM) uniform hat
 
+        user.getPlayers()[loginPosition] = player;
         user.sendPacket(LoginPacketCreator.getCreatePlayer(player));
         getLogger().info("Created player('{}')", player.getUsername());
-        player.setUser(user);
-        user.getPlayers()[loginPosition] = player;
     }
 }

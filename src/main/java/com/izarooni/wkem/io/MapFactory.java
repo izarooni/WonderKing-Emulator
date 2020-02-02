@@ -160,11 +160,13 @@ public class MapFactory {
             if (fh.direction == 3) {
                 fh.area = new Rectangle(fh.originLocation.getX(), fh.originLocation.getY() - 1 - fh.incY, fh.incX, fh.incY);
             }
-            for (TemplateSpawnPoint sp : template.spawnPoints) {
-                if (sp.foothold == null) {
-                    if (fh.area.intersects(sp.area)) {
-                        sp.area = sp.area.intersection(fh.area);
-                        sp.foothold = fh;
+            if (template.spawnPoints != null) {
+                for (TemplateSpawnPoint sp : template.spawnPoints) {
+                    if (sp.foothold == null) {
+                        if (fh.area.intersects(sp.area)) {
+                            sp.area = sp.area.intersection(fh.area);
+                            sp.foothold = fh;
+                        }
                     }
                 }
             }

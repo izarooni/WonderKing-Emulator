@@ -316,6 +316,7 @@ public enum PacketOperations {
     Unk0x0135(309),
     Unk0x0136(310),
     Unk0x0137(311),
+    Unk0x0138(312),
     Update_Inventory(313),
     Unk0x013A(314),
     CashShop_Info(315),
@@ -506,6 +507,7 @@ public enum PacketOperations {
     Unk0x01F4(500);
     public final int Id;
     public Class<? extends PacketRequest> handler;
+    private static final PacketOperations[] VALUES = values();
 
     static {
         Login_Info.handler = LoginRequest.class;
@@ -524,6 +526,9 @@ public enum PacketOperations {
         Map_Change.handler = PlayerMapTransferRequest.class;
         Quit.handler = PlayerQuitRequest.class;
         Player_Emote.handler = PlayerEmoteRequest.class;
+        Attraction.handler = PlayerAttractionRequest.class;
+        Player_RightClick.handler = PlayerRightClickRequest.class;
+        Player_ViewInfo.handler = PlayerViewInfoRequest.class;
     }
 
     PacketOperations(int Id) {
@@ -531,6 +536,6 @@ public enum PacketOperations {
     }
 
     public static Class<? extends PacketRequest> handlerOf(int header) {
-        return values()[header].handler;
+        return VALUES[header].handler;
     }
 }

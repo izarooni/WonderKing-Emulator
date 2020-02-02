@@ -20,6 +20,11 @@ public class TemplateMapPortal {
     public int unk3;
     public short destinationID;
 
+    @Override
+    public String toString() {
+        return String.format("TemplateMapPortal{location=%s, width=%d, height=%d, flag=%d, unk1=%s, unk2=%d, unk3=%d, destinationID=%s}", location, width, height, flag, unk1, unk2, unk3, destinationID);
+    }
+
     public void enter(Player player) {
         Map oldMap = player.getMap();
         Map newMap = player.getUser().getChannel().getMap(destinationID);
