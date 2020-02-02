@@ -61,4 +61,8 @@ public class Channel {
     public Map getMap(int mapID) {
         return maps.computeIfAbsent(mapID, Map::new);
     }
+
+    public Map removeMap(int mapId) {
+        return maps.remove(mapId);
+    }
 }

@@ -9,6 +9,7 @@ import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.server.world.life.Entity;
 import com.izarooni.wkem.server.world.life.Npc;
 import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.util.Disposable;
 import com.izarooni.wkem.util.PacketAnnouncer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 /**
  * @author izarooni
  */
-public class Map implements PacketAnnouncer {
+public class Map implements PacketAnnouncer, Disposable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
 
@@ -50,6 +51,12 @@ public class Map implements PacketAnnouncer {
     @Override
     public Stream<User> getUsers() {
         return players.values().stream().map(Player::getUser);
+    }
+
+    @Override
+    public void dispose() {
+        players.clear();
+        npcs.clear();
     }
 
     public int getId() {
@@ -95,7 +102,7 @@ public class Map implements PacketAnnouncer {
 
             players.put(player.getId(), player);
         } else if (entity instanceof Npc) {
-            npcs.put(id, (Npc) entity);
+            npcs.put(entity.getObjectID(), (Npc) entity);
         }
     }
 

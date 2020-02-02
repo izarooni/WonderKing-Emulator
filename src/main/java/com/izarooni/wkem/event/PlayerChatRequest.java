@@ -3,6 +3,7 @@ package com.izarooni.wkem.event;
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
+import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.life.Player;
 
@@ -25,20 +26,25 @@ public class PlayerChatRequest extends PacketRequest {
     @Override
     public void run() {
         User user = getUser();
+        Channel ch = user.getChannel();
         Player player = user.getPlayer();
 
         String cmd = text.split(" : ")[1];
         String[] args = cmd.split(" ");
         if (cmd.startsWith("/m")) {
             int mapID = Integer.parseInt(args[1]);
-            Map map = user.getChannel().getMap(mapID);
+            Map map = ch.getMap(mapID);
             if (map != null) {
                 map.addEntity(player);
             }
             return;
         } else if (cmd.equalsIgnoreCase("/whereami")) {
             text = String.format("You are in map: '%s'", player.getMap().getTemplate().name);
-        } else if (cmd.equalsIgnoreCase("/test")) {
+        } else if (cmd.equalsIgnoreCase("/reloadmap")) {
+            Map old = ch.removeMap(player.getMapId());
+            Map nMap = ch.getMap(player.getMapId());
+            old.getPlayers().values().forEach(nMap::addEntity);
+            old.dispose();
             return;
         }
 
