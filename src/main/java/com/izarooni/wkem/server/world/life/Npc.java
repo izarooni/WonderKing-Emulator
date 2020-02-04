@@ -21,7 +21,7 @@ public class Npc extends Entity {
     @Override // [0004478D0]
     public void encode(EndianWriter w) {
         // 69 bytes
-        w.writeShort(template.unk1);
+        w.writeShort(template.entityType);
         w.write(0);
         w.writeShort(getObjectID());
         w.writeShort(template.id);
@@ -32,9 +32,7 @@ public class Npc extends Entity {
         w.writeShort(getMp());
         w.writeShort((int) Physics.XVelocity); // 23
         w.writeShort((int) Physics.YVelocity); // 27
-        w.write(0);
-        w.write(42); // 29
-        w.skip(40);
+        w.skip(42);
     }
 
     @Override

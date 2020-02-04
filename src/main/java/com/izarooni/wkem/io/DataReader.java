@@ -20,7 +20,7 @@ public class DataReader {
         ItemFactory.loadBaseItemData();
         LOGGER.info("{} 'baseitemdata' entries cached", ItemFactory.baseItemData.size());
         MapFactory.createCache();
-        LOGGER.info("{} map entries cached", MapFactory.templateMaps.size());
+        LOGGER.info("{} map templates cached", MapFactory.templateMaps.size());
     }
 
     public static FileInputStream openFile(File file) throws FileNotFoundException {

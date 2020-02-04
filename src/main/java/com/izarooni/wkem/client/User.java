@@ -11,11 +11,16 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author izarooni
  */
 public class User implements Disposable {
 
+    //region todo remove; debugging purposes
+    private static final AtomicInteger UID = new AtomicInteger(1);
+    //endregion
     public static final String SessionAttribute = String.format("%s.%s", User.class.getName(), "user");
     private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
@@ -68,6 +73,9 @@ public class User implements Disposable {
             } else {
                 result = LoginPacketCreator.LoginResponse_IncorrectPassword;
             }
+        } else {
+            id = UID.getAndIncrement();
+            LOGGER.info("Account created user('{}') password('{}')", username, password);
         }
         return result;
     }

@@ -71,6 +71,10 @@ public class Map implements PacketAnnouncer, Disposable {
         return players;
     }
 
+    public ConcurrentHashMap<Integer, Npc> getNpcs() {
+        return npcs;
+    }
+
     public Optional<Player> findPlayer(Predicate<Player> p) {
         return players.values().stream().filter(p).findFirst();
     }
@@ -81,6 +85,7 @@ public class Map implements PacketAnnouncer, Disposable {
 
     public void addEntity(Entity entity) {
         entity.setObjectID(UID.getAndIncrement());
+
         if (entity instanceof Player) {
             Player player = (Player) entity;
             User user = player.getUser();
@@ -100,7 +105,7 @@ public class Map implements PacketAnnouncer, Disposable {
                 }
             }
 
-            players.put(player.getId(), player);
+            players.put(player.getObjectID(), player);
         } else if (entity instanceof Npc) {
             npcs.put(entity.getObjectID(), (Npc) entity);
         }
@@ -109,7 +114,7 @@ public class Map implements PacketAnnouncer, Disposable {
     public void removeEntity(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            players.remove(player.getId());
+            players.remove(player.getObjectID());
             player.setMap(null);
 
             sendPacket(GamePacketCreator.getPlayerDisappear(player));

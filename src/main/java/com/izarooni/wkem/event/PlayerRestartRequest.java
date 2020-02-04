@@ -1,10 +1,13 @@
 package com.izarooni.wkem.event;
 
+import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 
 /**
+ * [004C4100]
+ *
  * @author izarooni
  */
 public class PlayerRestartRequest extends PacketRequest {
@@ -16,8 +19,11 @@ public class PlayerRestartRequest extends PacketRequest {
 
     @Override
     public void run() {
+        User user = getUser();
         EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Player_Restart.Id);
-        getUser().sendPacket(w);
+        w.write(user.getId());
+        w.writeAsciiString(user.getPassword(), 32);
+        user.sendPacket(w);
     }
 }

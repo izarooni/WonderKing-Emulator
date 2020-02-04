@@ -1,5 +1,7 @@
 package com.izarooni.wkem.packet.accessor;
 
+import com.izarooni.wkem.util.ByteArray;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
@@ -17,6 +19,15 @@ public class EndianWriter {
 
     public EndianWriter(int size) {
         baos = new ByteArrayOutputStream(size);
+    }
+
+    @Override
+    public String toString() {
+        return ByteArray.toHex(array());
+    }
+
+    public String toAsciiString() {
+        return new String(array(), Charset.forName(CodePage.name()));
     }
 
     public byte[] array() {

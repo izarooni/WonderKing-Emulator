@@ -187,7 +187,7 @@ public class MapFactory {
             int width = reader.readInt(), height = reader.readInt();
             sp.area = new Rectangle(x, y, width, height);
             sp.id = reader.readInt();
-            sp.unk1 = reader.readInt();
+            sp.entityType = reader.readInt();
             template.spawnPoints.add(sp);
         }
         int portalCount = reader.readShort();

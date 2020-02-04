@@ -9,13 +9,15 @@ import java.util.ArrayList;
  */
 public class Server {
 
+    public static final String[] names = {"Windus", "Kadopan"};
+
     private final int id;
     private final String name;
     private final ArrayList<Channel> channels;
 
-    public Server(int id, String name) {
+    public Server(int id) {
         this.id = id;
-        this.name = name;
+        this.name = names[id];
 
         channels = new ArrayList<>(30);
     }

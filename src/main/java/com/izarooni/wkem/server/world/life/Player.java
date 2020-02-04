@@ -1,6 +1,7 @@
 package com.izarooni.wkem.server.world.life;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.client.meta.QuestMission;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
@@ -9,7 +10,9 @@ import com.izarooni.wkem.server.world.life.meta.storage.Item;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @author izarooni
@@ -31,7 +34,7 @@ public class Player extends Entity {
     private byte job;
     private byte gender;
     private ArrayList<Item> items;
-
+    private EnumMap<QuestMission.Status, HashSet<QuestMission>> quests;
     private Map map;
 
     public Player() {
@@ -43,6 +46,10 @@ public class Player extends Entity {
         mapId = 300;
         setLocation(new Vector2D(113, 0));
         items = new ArrayList<>(30);
+        quests = new EnumMap<>(QuestMission.Status.class);
+        for (QuestMission.Status s : QuestMission.Status.values()) {
+            quests.put(s, new HashSet<>());
+        }
     }
 
     @Override
@@ -319,6 +326,14 @@ public class Player extends Entity {
 
     public void setItems(ArrayList<Item> items) {
         this.items = items;
+    }
+
+    public EnumMap<QuestMission.Status, HashSet<QuestMission>> getQuests() {
+        return quests;
+    }
+
+    public void setQuests(EnumMap<QuestMission.Status, HashSet<QuestMission>> quests) {
+        this.quests = quests;
     }
 
     public Map getMap() {

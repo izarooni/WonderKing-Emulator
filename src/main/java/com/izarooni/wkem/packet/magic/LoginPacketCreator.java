@@ -57,7 +57,6 @@ public enum LoginPacketCreator {
 
         int channelCount = Backbone.getServers().stream().mapToInt(s -> s.getChannels().size()).sum();
         w.writeShort(channelCount);
-
         for (Server server : Backbone.getServers()) {
             for (Channel channel : server.getChannels()) {
                 w.write(server.getId());

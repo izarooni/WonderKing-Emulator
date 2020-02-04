@@ -33,11 +33,6 @@ public class ServerHandler extends IoHandlerAdapter {
     }
 
     @Override
-    public void sessionOpened(IoSession session) throws Exception {
-        LOGGER.info("Session({}) opened", session.getId());
-    }
-
-    @Override
     public void sessionClosed(IoSession session) throws Exception {
         User user = (User) session.removeAttribute(User.SessionAttribute);
         user.dispose();

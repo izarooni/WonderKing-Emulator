@@ -46,8 +46,8 @@ public enum PacketOperations {
     Unk0x0027(39),
     Player_Appear(40),
     Player_Disappear(41),
-    NPC_ReSpawn(42),
-    NPC_Die(43),
+    Npc_Appear(42),
+    Npc_Disappear(43),
     Item_Spawn(44),
     Item_Disappear(45),
     Damage(46),
@@ -88,9 +88,9 @@ public enum PacketOperations {
     End_Transaction(81),
     Unk0x0052(82),
     Unk0x0053(83),
-    TalkToNPC(84),
-    Complete_Quest(85),
-    OpCode0x0056(86),
+    Npc_Talk(84),
+    Quest_Receive(85),
+    Quest_Complete(86),
     QuestList(87),
     Unk0x0058(88),
     Unk0x0059(89),
@@ -104,7 +104,7 @@ public enum PacketOperations {
     Unk0x0061(97),
     Unk0x0062(98),
     Unk0x0063(99),
-    Quest_Data(100),
+    Quest_Data(100), // v2 = (__int8)(*pPacket); qmemcpy(this + 33, pPacket + 1, 4 * (4 * (unsigned int)v2 >> 2));
     Warehouse_Add_Item(101),
     Warehouse_Remove_Item(102),
     Unk0x0067(103),
@@ -512,23 +512,29 @@ public enum PacketOperations {
     static {
         Login_Info.handler = LoginRequest.class;
         Channel_Select.handler = ChannelSelectRequest.class;
+        Game_Enter.handler = GameEnterRequest.class;
+
         Character_Name_Check.handler = PlayerNameCheckRequest.class;
         Character_Create.handler = PlayerCreateRequest.class;
         Character_Delete.handler = PlayerDeleteRequest.class;
         Character_Select.handler = PlayerSelectRequest.class;
-        Game_Enter.handler = GameEnterRequest.class;
         Player_Move.handler = PlayerMoveRequest.class;
         Player_Jump.handler = PlayerJumpRequest.class;
         Player_Dash.handler = PlayerDashRequest.class;
         Player_Restart.handler = PlayerRestartRequest.class;
         Player_Reconnect.handler = PlayerReconnectRequest.class;
+        Player_Emote.handler = PlayerEmoteRequest.class;
+        Player_RightClick.handler = PlayerRightClickRequest.class;
+        Player_ViewInfo.handler = PlayerViewInfoRequest.class;
+        Quest_Receive.handler = PlayerQuestReceiveRequest.class;
+        Quest_Complete.handler = PlayerQuestCompleteRequest.class;
+
         Chat_Text.handler = PlayerChatRequest.class;
         Map_Change.handler = PlayerMapTransferRequest.class;
         Quit.handler = PlayerQuitRequest.class;
-        Player_Emote.handler = PlayerEmoteRequest.class;
         Attraction.handler = PlayerAttractionRequest.class;
-        Player_RightClick.handler = PlayerRightClickRequest.class;
-        Player_ViewInfo.handler = PlayerViewInfoRequest.class;
+
+        Npc_Talk.handler = PlayerTalkNpcRequest.class;
     }
 
     PacketOperations(int Id) {

@@ -1,6 +1,6 @@
 package com.izarooni.wkem.packet.magic;
 
-import com.izarooni.wkem.io.meta.TemplateSpawnPoint;
+import com.izarooni.wkem.client.meta.QuestMission;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
@@ -8,6 +8,9 @@ import com.izarooni.wkem.server.world.life.Npc;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.Vector2D;
 import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
+
+import java.util.EnumMap;
+import java.util.HashSet;
 
 /**
  * @author izarooni
@@ -288,8 +291,62 @@ public class GamePacketCreator {
 
     public static EndianWriter getNpcAppear(Npc npc) {
         EndianWriter w = new EndianWriter(69);
-        w.writeShort(PacketOperations.NPC_ReSpawn.Id);
+        w.writeShort(PacketOperations.Npc_Appear.Id);
         npc.encode(w);
+        return w;
+    }
+
+    // [00440990]
+    public static EndianWriter getNpcDisappear(int objectID) {
+        EndianWriter w = new EndianWriter(4);
+        w.writeShort(PacketOperations.Npc_Disappear.Id);
+        w.writeShort(objectID);
+        // if (objectId >= 500): "%s index - %d value - %d id - %s size - %d"
+        return w;
+    }
+
+    // [004C4B00]
+    public static EndianWriter getNpcQuests(short npcID, EnumMap<QuestMission.Status, HashSet<QuestMission>> quests) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Npc_Talk.Id);
+        w.writeShort(npcID);
+
+        HashSet<QuestMission> q = quests.get(QuestMission.Status.Complete);
+        w.write(q.size());
+        q.forEach(c -> w.writeShort(c.getID()));
+
+        q = quests.get(QuestMission.Status.InProgress);
+        w.write(q.size());
+        q.forEach(c -> w.writeShort(c.getID()));
+
+        q = quests.get(QuestMission.Status.Available);
+        w.write(q.size());
+        q.forEach(c -> w.writeShort(c.getID()));
+        return w;
+    }
+
+    // [00435660]
+    private static EndianWriter getQuestStatus(PacketOperations op, short npcID, short questID, byte status) {
+        EndianWriter w = new EndianWriter(10);
+        w.writeShort(op.Id);
+        w.writeShort(npcID);
+        w.writeShort(questID);
+        w.write(status);
+        return w;
+    }
+
+    // [004D8070]
+    public static EndianWriter getQuestReceive(short npcID, short questID, byte status) {
+        EndianWriter w = getQuestStatus(PacketOperations.Quest_Receive, npcID, questID, status);
+        w.write(0);
+        w.writeShort(0);
+        return w;
+    }
+
+    // [004D8220]
+    public static EndianWriter getQuestComplete(short npcID, short questID, byte status) {
+        EndianWriter w = getQuestStatus(PacketOperations.Quest_Complete, npcID, questID, status);
+        w.writeShort(0);
         return w;
     }
 }
