@@ -50,18 +50,18 @@ public enum LoginPacketCreator {
         return getLoginResponse(r.Id);
     }
 
+    // [004D4550]
     public static EndianWriter getChannelList() {
         EndianWriter w = getLoginResponse(LoginResponse_Ok);
-        w.write(1);
-        w.write(1);
+        w.write(0);
+        w.write(1); // admin
 
         int channelCount = Backbone.getServers().stream().mapToInt(s -> s.getChannels().size()).sum();
         w.writeShort(channelCount);
         for (Server server : Backbone.getServers()) {
             for (Channel channel : server.getChannels()) {
-                w.write(server.getId());
+                w.writeInt(server.getId());
                 w.write(channel.getId());
-                w.write(1);
             }
         }
         return w;
