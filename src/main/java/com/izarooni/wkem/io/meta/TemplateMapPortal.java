@@ -2,8 +2,8 @@ package com.izarooni.wkem.io.meta;
 
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.server.world.life.Player;
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
+import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.util.Vector2D;
 
 import java.util.Optional;
 

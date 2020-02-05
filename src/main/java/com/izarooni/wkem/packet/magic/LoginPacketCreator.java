@@ -4,7 +4,7 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.Server;
 import com.izarooni.wkem.server.world.Channel;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.service.Backbone;
 
 /**

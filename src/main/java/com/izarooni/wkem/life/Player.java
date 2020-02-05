@@ -1,13 +1,13 @@
-package com.izarooni.wkem.server.world.life;
+package com.izarooni.wkem.life;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.client.meta.QuestMission;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
-import com.izarooni.wkem.server.world.life.meta.storage.Item;
-import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
+import com.izarooni.wkem.util.Vector2D;
+import com.izarooni.wkem.life.meta.storage.Item;
+import com.izarooni.wkem.life.meta.storage.StorageType;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

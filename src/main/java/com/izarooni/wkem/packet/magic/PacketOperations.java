@@ -535,7 +535,7 @@ public enum PacketOperations {
         Quit.handler = PlayerQuitRequest.class;
         Attraction.handler = PlayerAttractionRequest.class;
 
-        Npc_Talk.handler = PlayerTalkNpcRequest.class;
+        Npc_Talk.handler = PlayerNpcTalkRequest.class;
     }
 
     PacketOperations(int Id) {

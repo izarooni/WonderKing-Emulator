@@ -1,4 +1,4 @@
-package com.izarooni.wkem.server.world.life.meta;
+package com.izarooni.wkem.util;
 
 import java.awt.*;
 import java.util.Objects;

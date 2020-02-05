@@ -6,7 +6,7 @@ import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.service.Backbone;
 
 import java.util.concurrent.ConcurrentHashMap;

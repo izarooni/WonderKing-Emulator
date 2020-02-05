@@ -2,10 +2,11 @@ package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
-import com.izarooni.wkem.packet.magic.GamePacketCreator;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 
 /**
  * @author izarooni
@@ -14,6 +15,15 @@ public class PlayerChatRequest extends PacketRequest {
 
     private short playerID;
     private String text;
+
+    public static EndianWriter getChatText(short playerID, String text) {
+        EndianWriter w = new EndianWriter(5 + text.length());
+        w.writeShort(PacketOperations.Chat_Text.Id);
+        w.write(text.length());
+        w.writeShort(playerID);
+        w.writeAsciiString(text);
+        return w;
+    }
 
     @Override
     public boolean process(EndianReader reader) {
@@ -48,6 +58,6 @@ public class PlayerChatRequest extends PacketRequest {
             return;
         }
 
-        player.getMap().sendPacket(GamePacketCreator.getChatText(playerID, text));
+        player.getMap().sendPacket(getChatText(playerID, text));
     }
 }

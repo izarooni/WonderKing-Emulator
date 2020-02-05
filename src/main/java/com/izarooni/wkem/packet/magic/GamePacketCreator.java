@@ -1,16 +1,11 @@
 package com.izarooni.wkem.packet.magic;
 
-import com.izarooni.wkem.client.meta.QuestMission;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
-import com.izarooni.wkem.server.world.life.Npc;
-import com.izarooni.wkem.server.world.life.Player;
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
-import com.izarooni.wkem.server.world.life.meta.storage.StorageType;
-
-import java.util.EnumMap;
-import java.util.HashSet;
+import com.izarooni.wkem.life.Npc;
+import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.life.meta.storage.StorageType;
 
 /**
  * @author izarooni
@@ -18,14 +13,6 @@ import java.util.HashSet;
 public class GamePacketCreator {
 
     private GamePacketCreator() {
-    }
-
-    public static EndianWriter getPlayerEmote(short playerID, byte emote) {
-        EndianWriter w = new EndianWriter(5);
-        w.writeShort(PacketOperations.Player_Emote.Id);
-        w.write(emote);
-        w.writeShort(playerID);
-        return w;
     }
 
     public static EndianWriter getPlayerInfo(Player player) {
@@ -139,46 +126,6 @@ public class GamePacketCreator {
         return w;
     }
 
-    public static EndianWriter getPlayerDash(short playerID, short a, byte b, byte c, Vector2D location) {
-        EndianWriter w = new EndianWriter(8);
-        w.writeShort(PacketOperations.Player_Dash.Id);
-        w.writeShort(playerID);
-        w.writeShort(a);
-        w.write(b);
-        w.write(c);
-        w.writeShort(location.getX());
-        w.writeShort(location.getY());
-        return w;
-    }
-
-    public static EndianWriter getPlayerJump(short playerID, short a, short b, long c) {
-        EndianWriter w = new EndianWriter(16);
-        w.writeShort(PacketOperations.Player_Jump.Id);
-        w.writeShort(playerID);
-        w.writeShort(a);
-        w.writeShort(b);
-        w.writeLong(c);
-        return w;
-    }
-
-    /**
-     * @param playerID unique ID of the moving player
-     * @param flag1    int16
-     * @param flag2    unsigned byte
-     * @param flag3    int32
-     */
-    public static EndianWriter getPlayerMove(int playerID, short flag1, short flag2, int flag3, Vector2D location) {
-        EndianWriter w = new EndianWriter(15);
-        w.writeShort(PacketOperations.Player_Move.Id);
-        w.writeShort(playerID);
-        w.writeShort(flag1);
-        w.writeShort(location.getX());
-        w.writeShort(location.getY());
-        w.write(flag2);
-        w.writeInt(flag3);
-        return w;
-    }
-
     // [0004CF810]
     public static EndianWriter getPlayerViewInfo(Player player) {
         EndianWriter w = new EndianWriter();
@@ -217,15 +164,6 @@ public class GamePacketCreator {
         for (Player player : map.getPlayers().values()) {
             player.encode(w);
         }
-        return w;
-    }
-
-    public static EndianWriter getChatText(short playerID, String text) {
-        EndianWriter w = new EndianWriter(5 + text.length());
-        w.writeShort(PacketOperations.Chat_Text.Id);
-        w.write(text.length());
-        w.writeShort(playerID);
-        w.writeAsciiString(text);
         return w;
     }
 
@@ -305,28 +243,8 @@ public class GamePacketCreator {
         return w;
     }
 
-    // [004C4B00]
-    public static EndianWriter getNpcQuests(short npcID, EnumMap<QuestMission.Status, HashSet<QuestMission>> quests) {
-        EndianWriter w = new EndianWriter();
-        w.writeShort(PacketOperations.Npc_Talk.Id);
-        w.writeShort(npcID);
-
-        HashSet<QuestMission> q = quests.get(QuestMission.Status.Complete);
-        w.write(q.size());
-        q.forEach(c -> w.writeShort(c.getID()));
-
-        q = quests.get(QuestMission.Status.InProgress);
-        w.write(q.size());
-        q.forEach(c -> w.writeShort(c.getID()));
-
-        q = quests.get(QuestMission.Status.Available);
-        w.write(q.size());
-        q.forEach(c -> w.writeShort(c.getID()));
-        return w;
-    }
-
     // [00435660]
-    private static EndianWriter getQuestStatus(PacketOperations op, short npcID, short questID, byte status) {
+    public static EndianWriter getQuestStatus(PacketOperations op, short npcID, short questID, byte status) {
         EndianWriter w = new EndianWriter(10);
         w.writeShort(op.Id);
         w.writeShort(npcID);
@@ -335,18 +253,4 @@ public class GamePacketCreator {
         return w;
     }
 
-    // [004D8070]
-    public static EndianWriter getQuestReceive(short npcID, short questID, byte status) {
-        EndianWriter w = getQuestStatus(PacketOperations.Quest_Receive, npcID, questID, status);
-        w.write(0);
-        w.writeShort(0);
-        return w;
-    }
-
-    // [004D8220]
-    public static EndianWriter getQuestComplete(short npcID, short questID, byte status) {
-        EndianWriter w = getQuestStatus(PacketOperations.Quest_Complete, npcID, questID, status);
-        w.writeShort(0);
-        return w;
-    }
 }

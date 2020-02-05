@@ -1,9 +1,9 @@
-package com.izarooni.wkem.server.world.life;
+package com.izarooni.wkem.life;
 
 import com.izarooni.wkem.io.meta.TemplateSpawnPoint;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Physics;
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
+import com.izarooni.wkem.util.Vector2D;
 
 /**
  * @author izarooni

@@ -1,4 +1,4 @@
-package com.izarooni.wkem.server.world.life.meta.storage;
+package com.izarooni.wkem.life.meta.storage;
 
 import com.izarooni.wkem.io.ItemFactory;
 import com.izarooni.wkem.io.meta.TemplateItem;

@@ -2,7 +2,7 @@ package com.izarooni.wkem.io;
 
 import com.izarooni.wkem.io.meta.*;
 import com.izarooni.wkem.packet.accessor.EndianReader;
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
+import com.izarooni.wkem.util.Vector2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

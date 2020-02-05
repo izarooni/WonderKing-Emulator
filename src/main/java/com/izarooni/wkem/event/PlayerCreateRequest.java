@@ -4,8 +4,8 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.PacketOperations;
-import com.izarooni.wkem.server.world.life.Player;
-import com.izarooni.wkem.server.world.life.meta.storage.Item;
+import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.life.meta.storage.Item;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

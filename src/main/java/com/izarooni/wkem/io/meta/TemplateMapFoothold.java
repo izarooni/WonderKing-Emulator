@@ -1,6 +1,6 @@
 package com.izarooni.wkem.io.meta;
 
-import com.izarooni.wkem.server.world.life.meta.Vector2D;
+import com.izarooni.wkem.util.Vector2D;
 
 import java.awt.*;
 

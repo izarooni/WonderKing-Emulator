@@ -3,7 +3,7 @@ package com.izarooni.wkem.server.world;
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.codec.GameDecoder;
 import com.izarooni.wkem.packet.codec.LoginEncoder;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.service.ServerHandler;
 import com.izarooni.wkem.util.Disposable;
 import com.izarooni.wkem.util.PacketAnnouncer;

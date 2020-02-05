@@ -1,7 +1,7 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.packet.accessor.EndianReader;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 
 /**
  * @author izarooni

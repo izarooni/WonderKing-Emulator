@@ -4,7 +4,7 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.io.meta.TemplateMapPortal;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
-import com.izarooni.wkem.server.world.life.Player;
+import com.izarooni.wkem.life.Player;
 
 import java.util.Optional;
 
