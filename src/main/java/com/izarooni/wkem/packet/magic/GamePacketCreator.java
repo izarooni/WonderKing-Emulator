@@ -1,11 +1,11 @@
 package com.izarooni.wkem.packet.magic;
 
-import com.izarooni.wkem.packet.accessor.EndianWriter;
-import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.server.world.Physics;
 import com.izarooni.wkem.life.Npc;
 import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.life.meta.storage.StorageType;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.server.world.Map;
+import com.izarooni.wkem.server.world.Physics;
 
 /**
  * @author izarooni
@@ -66,18 +66,7 @@ public class GamePacketCreator {
         w.writeShort(7);
         w.writeShort(7);
 
-        //region elemental damage
-        w.writeShort(0); // fire
-        w.writeShort(0); // water
-        w.writeShort(0); // dark
-        w.writeShort(0); // holy
-        //endregion
-        //region elemental resistance
-        w.writeShort(0); // fire
-        w.writeShort(0); // water
-        w.writeShort(0); // dark
-        w.writeShort(0); // holy
-        //endregion
+        player.getElements().encode(w);
 
         w.writeFloat(Physics.XVelocity);
         w.writeFloat(Physics.YVelocity);
