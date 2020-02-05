@@ -24,6 +24,7 @@ public class Channel implements PacketAnnouncer, Disposable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Channel.class);
 
+    private final int serverId;
     private final int id;
     private final String address;
     private final int port;
@@ -31,7 +32,8 @@ public class Channel implements PacketAnnouncer, Disposable {
     private final ConcurrentHashMap<Integer, Player> players;
     private final ConcurrentHashMap<Integer, Map> maps;
 
-    public Channel(int id, String address, int port, int capacity) throws IOException {
+    public Channel(int serverId, int id, String address, int port, int capacity) throws IOException {
+        this.serverId = serverId;
         this.id = id;
         this.address = address;
         this.port = port;
@@ -60,6 +62,10 @@ public class Channel implements PacketAnnouncer, Disposable {
     @Override
     public Stream<User> getUsers() {
         return players.values().stream().map(Player::getUser);
+    }
+
+    public int getServerId() {
+        return serverId;
     }
 
     public int getId() {

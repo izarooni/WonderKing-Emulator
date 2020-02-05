@@ -168,7 +168,7 @@ public enum PacketOperations {
     Unk0x00A1(161),
     Unk0x00A2(162),
     Unk0x00A3(163),
-    Unk0x00A4(164),
+    Channel_Change(164),
     Buddy_Request(165),
     Buddy_Response(166),
     Buddy_List(167),
@@ -512,6 +512,7 @@ public enum PacketOperations {
     static {
         Login_Info.handler = LoginRequest.class;
         Channel_Select.handler = ChannelSelectRequest.class;
+        Channel_Change.handler = ChannelChangeRequest.class;
         Game_Enter.handler = GameEnterRequest.class;
 
         Character_Name_Check.handler = PlayerNameCheckRequest.class;

@@ -22,7 +22,7 @@ public class PlayerRestartRequest extends PacketRequest {
         User user = getUser();
         EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Player_Restart.Id);
-        w.write(user.getId());
+        w.write(user.getChannel().getId());
         w.writeAsciiString(user.getPassword(), 32);
         user.sendPacket(w);
     }

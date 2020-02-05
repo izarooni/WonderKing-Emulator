@@ -59,7 +59,7 @@ public class Backbone {
             Server server = new Server(i);
             for (int j = 0; j < nChannels; j++) {
                 int port = (serverPort + 1) + (j + (i * 15)); // 15 channels per world
-                Channel channel = new Channel(j, serverAddress, port, 100);
+                Channel channel = new Channel(i, j, serverAddress, port, 100);
                 LOGGER.info("Channel {} bound to {}:{}", (channel.getId() + 1), serverAddress, port);
                 server.getChannels().add(channel);
             }

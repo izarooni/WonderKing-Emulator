@@ -103,14 +103,6 @@ public enum LoginPacketCreator {
         return w;
     }
 
-    public static EndianWriter getCreatePlayer(Player player) {
-        EndianWriter w = new EndianWriter();
-        w.writeShort(PacketOperations.Character_Create.Id);
-        w.write(0);
-        player.encodeBasic(w);
-        return w;
-    }
-
     public static EndianWriter getDeletePlayer(byte loginPosition) {
         EndianWriter w = new EndianWriter(3);
         w.writeShort(PacketOperations.Character_Delete.Id);

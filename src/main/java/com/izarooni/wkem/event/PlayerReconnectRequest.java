@@ -10,14 +10,21 @@ import com.izarooni.wkem.service.Backbone;
  */
 public class PlayerReconnectRequest extends PacketRequest {
 
-    private byte accountID;
     private String username, password;
+    private byte serverID, channelID;
 
     @Override
     public boolean process(EndianReader reader) {
         username = reader.readAsciiString(20).trim();
-        reader.readByte();
+        serverID = reader.readByte(); // questionable
+        channelID = reader.readByte();
         password = reader.readAsciiString(32).trim();
+
+        User user = getUser();
+        if (Backbone.getServers().get(channelID) == null) {
+            user.sendPacket(LoginPacketCreator.getLoginResponse(LoginPacketCreator.LoginResponse_Error));
+            return false;
+        }
         return true;
     }
 
@@ -29,6 +36,8 @@ public class PlayerReconnectRequest extends PacketRequest {
             user.sendPacket(LoginPacketCreator.getLoginResponse(result));
             return;
         }
+
+        user.setChannel(Backbone.getServers().get(serverID).getChannels().get(channelID));
 
         Backbone.Users.put(username, user);
         user.sendPacket(LoginPacketCreator.getChannelList());

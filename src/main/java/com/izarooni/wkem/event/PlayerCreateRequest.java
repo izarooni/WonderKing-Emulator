@@ -2,7 +2,8 @@ package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
-import com.izarooni.wkem.packet.magic.LoginPacketCreator;
+import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.life.Player;
 import com.izarooni.wkem.server.world.life.meta.storage.Item;
 
@@ -18,6 +19,27 @@ public class PlayerCreateRequest extends PacketRequest {
     private byte loginPosition;
     private byte job, gender;
     private short hair, eyes, shirt, pants;
+
+    public static EndianWriter getCreatePlayer(Player player) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Character_Create.Id);
+        w.write(0);
+        player.encodeBasic(w);
+        return w;
+    }
+
+    /**
+     * <ol start=1>
+     *     <li>Duplicate ID</li>
+     *     <li value=4>Incorrect ID</li>
+     * </ol>
+     */
+    public static EndianWriter getCreatePlayerFailed() {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Character_Create.Id);
+        w.write(2);
+        return w;
+    }
 
     @Override
     public boolean process(EndianReader reader) {
@@ -35,12 +57,15 @@ public class PlayerCreateRequest extends PacketRequest {
 
         User user = getUser();
         if (user.getPlayer() == null) {
+            user.sendPacket(getCreatePlayerFailed());
             getLogger().warn("creation without name check");
             return false;
         } else if (!user.getPlayer().getUsername().equals(username)) {
+            user.sendPacket(getCreatePlayerFailed());
             getLogger().warn("username mismatch; '{}' supposed to be '{}'", username, user.getPlayer().getUsername());
             return false;
         } else if (user.getPlayers()[loginPosition] != null) {
+            user.sendPacket(getCreatePlayerFailed());
             getLogger().warn("creating character in position where one already exists: {}", loginPosition);
             return false;
         }
@@ -56,6 +81,11 @@ public class PlayerCreateRequest extends PacketRequest {
         eyes = (short) ((job - 1) * 6 + (gender - 1) * 3 + eyes + 25);
         shirt = (short) ((gender - 1) * 3 + shirt + 49);
         pants = (short) ((gender - 1) * 3 + pants + 58);
+
+        if (hair < 0) {
+            user.sendPacket(getCreatePlayerFailed());
+            return;
+        }
 
         player.setId(UID.getAndIncrement());
         player.setLoginPosition(loginPosition);
@@ -103,7 +133,7 @@ public class PlayerCreateRequest extends PacketRequest {
         player.getItems().add(new Item((short) 763)); // (GM) uniform hat
 
         user.getPlayers()[loginPosition] = player;
-        user.sendPacket(LoginPacketCreator.getCreatePlayer(player));
+        user.sendPacket(getCreatePlayer(player));
         getLogger().info("Created player('{}')", player.getUsername());
     }
 }
