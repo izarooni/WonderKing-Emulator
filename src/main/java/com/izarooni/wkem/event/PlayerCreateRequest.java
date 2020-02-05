@@ -3,6 +3,7 @@ package com.izarooni.wkem.event;
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.life.meta.storage.Item;
@@ -24,7 +25,7 @@ public class PlayerCreateRequest extends PacketRequest {
         EndianWriter w = new EndianWriter();
         w.writeShort(PacketOperations.Character_Create.Id);
         w.write(0);
-        player.encodeBasic(w);
+        LoginPacketCreator.encodePlayerSelect(w, player);
         return w;
     }
 

@@ -24,35 +24,35 @@ public abstract class Entity implements Disposable {
         this.objectID = objectID;
     }
 
-    public final int getHp() {
+    public int getHp() {
         return hp;
     }
 
-    public final void setHp(int hp) {
+    public void setHp(int hp) {
         this.hp = hp;
     }
 
-    public final int getMp() {
+    public int getMp() {
         return mp;
     }
 
-    public final void setMp(int mp) {
+    public void setMp(int mp) {
         this.mp = mp;
     }
 
-    public final int getMaxHp() {
+    public int getMaxHp() {
         return maxHp;
     }
 
-    public final void setMaxHp(int maxHp) {
+    public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
     }
 
-    public final int getMaxMp() {
+    public int getMaxMp() {
         return maxMp;
     }
 
-    public final void setMaxMp(int maxMp) {
+    public void setMaxMp(int maxMp) {
         this.maxMp = maxMp;
     }
 

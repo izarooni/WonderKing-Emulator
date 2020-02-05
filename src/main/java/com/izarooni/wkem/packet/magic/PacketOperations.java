@@ -64,8 +64,8 @@ public enum PacketOperations {
     Unk0x0039(57),
     Player_UpdateHPMP(58),
     Player_Update1(59),
-    Map_Change(60),
-    Chat_Text(61),
+    Map_Transfer(60),
+    Player_Chat(61),
     LevelUp_Effect(62),
     Inventory_Update(63),
     Unk0x0040(64),
@@ -156,7 +156,7 @@ public enum PacketOperations {
     Unk0x0095(149),
     Unk0x0096(150),
     Unk0x0097(151),
-    Quit(152),
+    Player_Quit(152),
     Unk0x0099(153),
     Unk0x009A(154),
     Unk0x009B(155),
@@ -519,6 +519,7 @@ public enum PacketOperations {
         Character_Create.handler = PlayerCreateRequest.class;
         Character_Delete.handler = PlayerDeleteRequest.class;
         Character_Select.handler = PlayerSelectRequest.class;
+
         Player_Move.handler = PlayerMoveRequest.class;
         Player_Jump.handler = PlayerJumpRequest.class;
         Player_Dash.handler = PlayerDashRequest.class;
@@ -527,12 +528,15 @@ public enum PacketOperations {
         Player_Emote.handler = PlayerEmoteRequest.class;
         Player_RightClick.handler = PlayerRightClickRequest.class;
         Player_ViewInfo.handler = PlayerViewInfoRequest.class;
+        Player_Chat.handler = PlayerChatRequest.class;
+        Player_Quit.handler = PlayerQuitRequest.class;
+
+        Item_Unequip.handler = PlayerUnequipRequest.class;
+
         Quest_Receive.handler = PlayerQuestReceiveRequest.class;
         Quest_Complete.handler = PlayerQuestCompleteRequest.class;
 
-        Chat_Text.handler = PlayerChatRequest.class;
-        Map_Change.handler = PlayerMapTransferRequest.class;
-        Quit.handler = PlayerQuitRequest.class;
+        Map_Transfer.handler = PlayerMapTransferRequest.class;
         Attraction.handler = PlayerAttractionRequest.class;
 
         Npc_Talk.handler = PlayerNpcTalkRequest.class;

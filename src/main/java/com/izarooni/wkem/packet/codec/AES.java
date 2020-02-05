@@ -457,16 +457,7 @@ public class AES {
             packet.writeInt(pos + 12, (int) (s3 ^ dec.readUnsignedInt(k + 12)));
         }
         if (pos != buffer.length) {
-            /*
-            [00835280]
-            if ( v6 != -16 ) // packet could not be fully decoded via transformation
-            {
-                memcpy_0(v9, a3, v6 + 16);
-                for ( i = 0; i < v6 + 16; ++i ) // loop thru remains(?)
-                    v9[i] ^= a5[i]; // XOR bytes
-                result = memcpy_0(a2, v9, v6 + 16);
-            }
-             */
+            // [00835280]
             for (int i = 0; i < buffer.length - pos; i++) {
                 packet.writeByte(end + i, (byte) (packet.readByte(end + i) ^ test[i]));
             }

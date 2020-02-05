@@ -21,14 +21,14 @@ public class TemplateItem {
     public long unk4;
     public long cash;
     public long unk5;
-    public long Price;
+    public long price;
     public long unk7;
-    public byte[] r1c;
+    public short[] r1c;
     public long levelRequirement;
     public long sexNo;
     public long weaponSomething;
     public long unk8;
-    public byte[] r2c;
+    public short[] r2c;
     public long unk9;
     public long statStr;
     public long statDex;
@@ -37,122 +37,117 @@ public class TemplateItem {
     public long statLuk;
     public long unk10;
     public long unk11;
-    public byte[] r4c;
-    public byte[] r5c;
-    public long elemFire;
-    public long elemWater;
-    public long elemDark;
-    public long elemHoly;
-    public byte[] r6c;
-    public byte[] r7c;
-    public byte[] r8c;
-    public long statDef;
+    public short[] r4c;
+    public short[] r5c;
+    public long fireResist;
+    public long waterResist;
+    public long darkResist;
+    public long holyResist;
+    public short[] r7c;
+    public short[] r6c;
+    public short[] r8c;
+    public long defense;
     public long unk12;
     public long unk13;
     public long unk14;
-    public byte[] r9c;
-    public byte[] r10c;
-    public long AdditionalHP;
-    public long AdditionalMP;
-    public byte[] r11c;
-    public long HitRate;
+    public short[] r9c;
+    public short[] r10c;
+    public long addHp;
+    public long addMp;
+    public short[] r11c;
+    public long hitRate;
     public long unk15;
-    public long MAttk;
-    public long Critical;
-    public byte[] r12c;
+    public long magicAttack;
+    public long critical;
+    public short[] r12c;
     public long unk16;
     public long minAttack;
     public long maxAttack;
-    public long PhysicalDamage;
-    public byte[] r13c;
-    public byte[] r14c;
-    public byte[] r15c;
-    public byte[] r16c;
-    public int InvX;
-    public int InvY;
-    public int InvWidth;
-    public int InvHeight;
-    public int SheetID;
+    public long physicalDamage;
+    public short[] r13c, r14c, r15c, r16c;
+    public int invX, invY;
+    public int invWidth, invHeight;
+    public int sheetID;
     public String name;
-    public String descriptionc;
-    public byte[] Unknown;
-    public int PetID;
-    public byte[] Unknown2;
+    public String description;
+    public short[] unknown;
+    public int petID;
+    public short[] unknown2;
 
     @Override
     public String toString() {
         return "TemplateItem{" +
-                "id=" + id +
-                ", disabled=" + disabled +
+                "ID=" + id +
+                ", Disabled=" + disabled +
                 ", IItemType=" + itemTypeId +
-                ", unk2=" + unk2 +
-                ", unk3=" + unk3 +
-                ", classNo1=" + classNo1 +
-                ", classNo2=" + classNo2 +
-                ", classNo3=" + classNo3 +
-                ", classNo4=" + classNo4 +
-                ", slotNo=" + slotNo +
-                ", slotNo2=" + slotNo2 +
-                ", unk4=" + unk4 +
-                ", cash=" + cash +
-                ", unk5=" + unk5 +
-                ", Price=" + Price +
-                ", unk7=" + unk7 +
-                ", r1c=" + Arrays.toString(r1c) +
-                ", levelRequirement=" + levelRequirement +
-                ", sexNo=" + sexNo +
-                ", weaponSomething=" + weaponSomething +
-                ", unk8=" + unk8 +
-                ", r2c=" + Arrays.toString(r2c) +
-                ", unk9=" + unk9 +
-                ", statStr=" + statStr +
-                ", statDex=" + statDex +
-                ", statInt=" + statInt +
-                ", statVit=" + statVit +
-                ", statLuk=" + statLuk +
-                ", unk10=" + unk10 +
-                ", unk11=" + unk11 +
-                ", r4c=" + Arrays.toString(r4c) +
-                ", r5c=" + Arrays.toString(r5c) +
-                ", elemFire=" + elemFire +
-                ", elemWater=" + elemWater +
-                ", elemDark=" + elemDark +
-                ", elemHoly=" + elemHoly +
-                ", r6c=" + Arrays.toString(r6c) +
-                ", r7c=" + Arrays.toString(r7c) +
-                ", r8c=" + Arrays.toString(r8c) +
-                ", statDef=" + statDef +
-                ", unk12=" + unk12 +
-                ", unk13=" + unk13 +
-                ", unk14=" + unk14 +
-                ", r9c=" + Arrays.toString(r9c) +
-                ", r10c=" + Arrays.toString(r10c) +
-                ", AdditionalHP=" + AdditionalHP +
-                ", AdditionalMP=" + AdditionalMP +
-                ", r11c=" + Arrays.toString(r11c) +
-                ", HitRate=" + HitRate +
-                ", unk15=" + unk15 +
-                ", MAttk=" + MAttk +
-                ", Critical=" + Critical +
-                ", r12c=" + Arrays.toString(r12c) +
-                ", unk16=" + unk16 +
-                ", minAttack=" + minAttack +
-                ", maxAttack=" + maxAttack +
-                ", PhysicalDamage=" + PhysicalDamage +
-                ", r13c=" + Arrays.toString(r13c) +
-                ", r14c=" + Arrays.toString(r14c) +
-                ", r15c=" + Arrays.toString(r15c) +
-                ", r16c=" + Arrays.toString(r16c) +
-                ", InvX=" + InvX +
-                ", InvY=" + InvY +
-                ", InvWidth=" + InvWidth +
-                ", InvHeight=" + InvHeight +
-                ", SheetID=" + SheetID +
-                ", name='" + name + '\'' +
-                ", descriptionc='" + descriptionc + '\'' +
-                ", Unknown=" + Arrays.toString(Unknown) +
-                ", PetID=" + PetID +
-                ", Unknown2=" + Arrays.toString(Unknown2) +
+                ", Unk2=" + unk2 +
+                ", Unk3=" + unk3 +
+                ", ClassNo1=" + classNo1 +
+                ", ClassNo2=" + classNo2 +
+                ", ClassNo3=" + classNo3 +
+                ", ClassNo4=" + classNo4 +
+                ", SlotNo=" + slotNo +
+                ", SlotNo2=" + slotNo2 +
+                ", Unk4=" + unk4 +
+                ", Cash=" + cash +
+                ", Unk5=" + unk5 +
+                ", Price=" + price +
+                ", Unk7=" + unk7 +
+                ", R1c=" + Arrays.toString(r1c) +
+                ", LevelRequirement=" + levelRequirement +
+                ", SexNo=" + sexNo +
+                ", WeaponSomething=" + weaponSomething +
+                ", Unk8=" + unk8 +
+                ", R2c=" + Arrays.toString(r2c) +
+                ", Unk9=" + unk9 +
+                ", StatStr=" + statStr +
+                ", StatDex=" + statDex +
+                ", StatInt=" + statInt +
+                ", StatVit=" + statVit +
+                ", StatLuk=" + statLuk +
+                ", Unk10=" + unk10 +
+                ", Unk11=" + unk11 +
+                ", R4c=" + Arrays.toString(r4c) +
+                ", R5c=" + Arrays.toString(r5c) +
+                ", FireResist=" + fireResist +
+                ", WaterResist=" + waterResist +
+                ", DarkResist=" + darkResist +
+                ", HolyResist=" + holyResist +
+                ", R6c=" + Arrays.toString(r7c) +
+                ", R7c=" + Arrays.toString(r6c) +
+                ", R8c=" + Arrays.toString(r8c) +
+                ", Defense=" + defense +
+                ", Unk12=" + unk12 +
+                ", Unk13=" + unk13 +
+                ", Unk14=" + unk14 +
+                ", R9c=" + Arrays.toString(r9c) +
+                ", R10c=" + Arrays.toString(r10c) +
+                ", AdditionalHP=" + addHp +
+                ", AdditionalMP=" + addMp +
+                ", R11c=" + Arrays.toString(r11c) +
+                ", HitRate=" + hitRate +
+                ", Unk15=" + unk15 +
+                ", MagicAttack=" + magicAttack +
+                ", Critical=" + critical +
+                ", R12c=" + Arrays.toString(r12c) +
+                ", Unk16=" + unk16 +
+                ", MinAttack=" + minAttack +
+                ", MaxAttack=" + maxAttack +
+                ", PhysicalDamage=" + physicalDamage +
+                ", R13c=" + Arrays.toString(r13c) +
+                ", R14c=" + Arrays.toString(r14c) +
+                ", R15c=" + Arrays.toString(r15c) +
+                ", R16c=" + Arrays.toString(r16c) +
+                ", InvX=" + invX +
+                ", InvY=" + invY +
+                ", InvWidth=" + invWidth +
+                ", InvHeight=" + invHeight +
+                ", SheetID=" + sheetID +
+                ", Name='" + name + '\'' +
+                ", Description='" + description + '\'' +
+                ", unknown=" + Arrays.toString(unknown) +
+                ", PetID=" + petID +
+                ", Unknown2=" + Arrays.toString(unknown2) +
                 '}';
     }
 }

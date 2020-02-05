@@ -2,7 +2,9 @@ package com.izarooni.wkem.life;
 
 import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.client.meta.QuestMission;
-import com.izarooni.wkem.life.meta.Elements;
+import com.izarooni.wkem.io.meta.TemplateItem;
+import com.izarooni.wkem.life.meta.DynamicStats;
+import com.izarooni.wkem.life.meta.Element;
 import com.izarooni.wkem.life.meta.storage.Item;
 import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
@@ -37,22 +39,27 @@ public class Player extends Entity {
     private ArrayList<Item> items;
     private EnumMap<QuestMission.Status, HashSet<QuestMission>> quests;
     private transient Map map;
-    private final Elements elements;
+    private transient DynamicStats dynamicStats;
 
     public Player() {
-        level = 1;
+        setLevel((byte) 1);
         setHp(50);
         setMaxHp(50);
         setMp(50);
         setMaxMp(50);
-        mapId = 300;
+        setMapId(300);
         setLocation(new Vector2D(113, 0));
-        items = new ArrayList<>(30);
-        quests = new EnumMap<>(QuestMission.Status.class);
+        setItems(new ArrayList<>(30));
+        setQuests(new EnumMap<>(QuestMission.Status.class));
         for (QuestMission.Status s : QuestMission.Status.values()) {
             quests.put(s, new HashSet<>());
         }
-        elements = new Elements();
+        setDynamicStats(dynamicStats);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Player{id=%d, username='%s'}", id, username);
     }
 
     @Override
@@ -61,6 +68,7 @@ public class Player extends Entity {
             map.removeEntity(this);
         }
     }
+
 
     @Override // 160 bytes
     public void encode(EndianWriter w) {
@@ -78,6 +86,7 @@ public class Player extends Entity {
         w.skip(42);
     }
 
+    // 12 bytes
     public void encodeStats(EndianWriter w) {
         w.writeShort(str);
         w.writeShort(dex);
@@ -87,36 +96,12 @@ public class Player extends Entity {
         w.writeShort(wisdom);
     }
 
-    // 132 bytes of player data
-    public void encodeBasic(EndianWriter w) {
-        w.writeInt(loginPosition);
-        w.writeAsciiString(username, 20);
-        //region job advancements
-        w.write(job);
-        w.write(0);
-        w.write(0);
-        w.write(0);
-        //endregion
-        w.write(gender);
-        w.writeShort(level);
-        w.write(0); // exp as percentage
-        encodeStats(w);
-        w.writeInt(getHp());
-        w.writeInt(getMp());
-        encodeItemIDs(w, StorageType.Equipped, 20);
-        encodeItemIDs(w, StorageType.EquippedCash, 20);
-    }
-
     public HashMap<Short, Item> encodeItemIDs(EndianWriter w, StorageType type, int count) {
         HashMap<Short, Item> h = new HashMap<>();
-        items.stream().filter(i -> i.getStorageType() == type)
-                .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+        items.stream().filter(i -> i.getStorageType() == type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
         for (short i = 0; i < count; i++) {
-            if (h.containsKey(i)) {
-                w.writeShort(h.get(i).getId());
-            } else {
-                w.writeShort(0);
-            }
+            if (h.containsKey(i)) w.writeShort(h.get(i).getId());
+            else w.writeShort(0);
         }
         return h;
     }
@@ -141,8 +126,10 @@ public class Player extends Entity {
 
     public void encodeInventory(EndianWriter w, StorageType type, int bags) {
         HashMap<Short, Item> h = new HashMap<>();
-        items.stream().filter(i -> i.getStorageType() == type)
-                .forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+        items.stream().filter(i -> i.getStorageType() == type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+
+        w.write(bags); // eqp_bags
+        w.write(bags); // etc_bags
 
         for (short bag = 0; bag < bags; bag++) {
             final short start = (short) (20 * bag), end = (short) (20 * (bag + 1));
@@ -169,6 +156,23 @@ public class Player extends Entity {
             }
         }
         h.clear();
+    }
+
+    public void recalculate() {
+        setDynamicStats(dynamicStats = new DynamicStats());
+
+        for (Item item : getItems()) {
+            TemplateItem t = item.getTemplate();
+            dynamicStats.addHitRate((int) t.hitRate);
+            dynamicStats.addMinWeaponAttack((int) t.minAttack);
+            dynamicStats.addMaxWeaponAttack((int) t.maxAttack);
+            dynamicStats.addPDD((int) t.defense);
+
+            dynamicStats.addResistance(Element.Fire, (int) t.fireResist);
+            dynamicStats.addResistance(Element.Water, (int) t.waterResist);
+            dynamicStats.addResistance(Element.Dark, (int) t.darkResist);
+            dynamicStats.addResistance(Element.Holy, (int) t.holyResist);
+        }
     }
 
     public User getUser() {
@@ -347,7 +351,11 @@ public class Player extends Entity {
         this.map = map;
     }
 
-    public Elements getElements() {
-        return elements;
+    public DynamicStats getDynamicStats() {
+        return dynamicStats;
+    }
+
+    public void setDynamicStats(DynamicStats dynamicStats) {
+        this.dynamicStats = dynamicStats;
     }
 }

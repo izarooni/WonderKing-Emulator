@@ -33,7 +33,7 @@ public class PlayerSelectRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         Player player = user.getPlayers()[loginPosition];
-
+        player.recalculate();
         user.sendPacket(LoginPacketCreator.getSelectPlayer(user));
     }
 }

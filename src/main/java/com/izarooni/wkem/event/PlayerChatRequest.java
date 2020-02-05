@@ -18,7 +18,7 @@ public class PlayerChatRequest extends PacketRequest {
 
     public static EndianWriter getChatText(short playerID, String text) {
         EndianWriter w = new EndianWriter(5 + text.length());
-        w.writeShort(PacketOperations.Chat_Text.Id);
+        w.writeShort(PacketOperations.Player_Chat.Id);
         w.write(text.length());
         w.writeShort(playerID);
         w.writeAsciiString(text);

@@ -4,10 +4,17 @@ package com.izarooni.wkem.life.meta;
  * @author izarooni
  */
 public enum Element {
-    Fire(Element.Water), Water(Element.Fire), Dark(Element.Holy), Holy(Element.Dark);
-    final Element weakness;
+    Fire, Water, Dark, Holy;
+    private Element weakness;
 
-    Element(Element weakness) {
-        this.weakness = weakness;
+    static {
+        Fire.weakness = Water;
+        Water.weakness = Fire;
+        Dark.weakness = Holy;
+        Holy.weakness = Dark;
+    }
+
+    public Element getWeakness() {
+        return weakness;
     }
 }

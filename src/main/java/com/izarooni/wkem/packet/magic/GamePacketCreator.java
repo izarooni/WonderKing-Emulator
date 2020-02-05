@@ -52,13 +52,7 @@ public class GamePacketCreator {
 
         w.writeShort(1000);
 
-        w.writeShort(10); // watk min
-        w.writeShort(15); // watk max
-        w.writeShort(0); // range atk min
-        w.writeShort(0); // range atk max
-        w.writeShort(1); // pad
-        w.writeShort(38); // hit rate
-        w.writeShort(6); // evasion
+        player.getDynamicStats().encodeAttack(w);
 
         w.writeShort(10);
         w.writeShort(7);
@@ -66,7 +60,7 @@ public class GamePacketCreator {
         w.writeShort(7);
         w.writeShort(7);
 
-        player.getElements().encode(w);
+        player.getDynamicStats().encodeElements(w);
 
         w.writeFloat(Physics.XVelocity);
         w.writeFloat(Physics.YVelocity);
@@ -74,8 +68,6 @@ public class GamePacketCreator {
         w.writeShort(0); // bonus stats
         w.skip(44);
 
-        w.write(1); // eqp_bags
-        w.write(1); // etc_bags
         player.encodeInventory(w, StorageType.Equip, 1);
         player.encodeInventory(w, StorageType.Etc, 1);
         w.skip(304);
@@ -175,7 +167,7 @@ public class GamePacketCreator {
     // [00055320]
     public static EndianWriter getPlayerMapTransferFailed() {
         EndianWriter w = new EndianWriter(3);
-        w.writeShort(PacketOperations.Map_Change.Id);
+        w.writeShort(PacketOperations.Map_Transfer.Id);
         w.write(4);
         return w;
     }
@@ -185,7 +177,7 @@ public class GamePacketCreator {
         int npSize = map.getPlayers().size();
 
         EndianWriter w = new EndianWriter(14 + (npSize * 160));
-        w.writeShort(PacketOperations.Map_Change.Id);
+        w.writeShort(PacketOperations.Map_Transfer.Id);
         w.write(0);
         w.write(2);
 

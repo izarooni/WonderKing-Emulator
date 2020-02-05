@@ -1,6 +1,7 @@
 package com.izarooni.wkem.packet.magic;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.Server;
 import com.izarooni.wkem.server.world.Channel;
@@ -85,10 +86,30 @@ public enum LoginPacketCreator {
         w.write(playerCount);
         for (Player player : user.getPlayers()) {
             if (player != null) {
-                player.encodeBasic(w);
+                encodePlayerSelect(w, player);
             }
         }
         return w;
+    }
+
+    // 132 bytes of player data
+    public static void encodePlayerSelect(EndianWriter w, Player player) {
+        w.writeInt(player.getLoginPosition());
+        w.writeAsciiString(player.getUsername(), 20);
+        //region job advancements
+        w.write(player.getJob());
+        w.write(0);
+        w.write(0);
+        w.write(0);
+        //endregion
+        w.write(player.getGender());
+        w.writeShort(player.getLevel());
+        w.write(0); // exp as percentage
+        player.encodeStats(w);
+        w.writeInt(player.getHp());
+        w.writeInt(player.getMp());
+        player.encodeItemIDs(w, StorageType.Equipped, 20);
+        player.encodeItemIDs(w, StorageType.EquippedCash, 20);
     }
 
     public static EndianWriter getNameCheckResponse(LoginPacketCreator r) {

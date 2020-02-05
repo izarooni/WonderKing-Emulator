@@ -162,6 +162,14 @@ public class EndianReader {
         return dest;
     }
 
+    public short[] readUnsigned(int num) {
+        short[] dest = new short[num];
+        for (int i = 0; i < num; i++) {
+            dest[i] = (short) (((short) readByte()) & 0xff);
+        }
+        return dest;
+    }
+
     public String readAsciiString(int n) {
         return new String(read(n), Charset.forName(CodePage));
     }

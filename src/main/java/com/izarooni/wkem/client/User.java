@@ -1,9 +1,9 @@
 package com.izarooni.wkem.client;
 
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.server.world.Channel;
-import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.service.Backbone;
 import com.izarooni.wkem.util.Disposable;
 import org.apache.mina.core.future.WriteFuture;
@@ -35,6 +35,11 @@ public class User implements Disposable {
         this.session = session;
 
         players = new Player[3];
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User{id=%d, username='%s'}", id, username);
     }
 
     @Override
