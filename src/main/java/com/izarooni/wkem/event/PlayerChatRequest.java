@@ -1,12 +1,12 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 import com.izarooni.wkem.server.world.Channel;
 import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.life.Player;
 
 /**
  * @author izarooni

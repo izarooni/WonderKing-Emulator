@@ -6,6 +6,7 @@ import com.izarooni.wkem.io.meta.TemplateItem;
 import com.izarooni.wkem.life.meta.DynamicStats;
 import com.izarooni.wkem.life.meta.Element;
 import com.izarooni.wkem.life.meta.storage.Item;
+import com.izarooni.wkem.life.meta.storage.Storage;
 import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
@@ -36,7 +37,7 @@ public class Player extends Entity {
     private byte level;
     private byte job;
     private byte gender;
-    private ArrayList<Item> items;
+    private EnumMap<StorageType, Storage> storage;
     private EnumMap<QuestMission.Status, HashSet<QuestMission>> quests;
     private transient Map map;
     private transient DynamicStats dynamicStats;
@@ -49,8 +50,11 @@ public class Player extends Entity {
         setMaxMp(50);
         setMapId(300);
         setLocation(new Vector2D(113, 0));
-        setItems(new ArrayList<>(30));
-        setQuests(new EnumMap<>(QuestMission.Status.class));
+        storage = new EnumMap<>(StorageType.class);
+        for (StorageType s : StorageType.values()) {
+            storage.put(s, new Storage((short) 20, (byte) 1));
+        }
+        quests = new EnumMap<>(QuestMission.Status.class);
         for (QuestMission.Status s : QuestMission.Status.values()) {
             quests.put(s, new HashSet<>());
         }
@@ -98,7 +102,7 @@ public class Player extends Entity {
 
     public HashMap<Short, Item> encodeItemIDs(EndianWriter w, StorageType type, int count) {
         HashMap<Short, Item> h = new HashMap<>();
-        items.stream().filter(i -> i.getStorageType() == type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+        storage.get(type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
         for (short i = 0; i < count; i++) {
             if (h.containsKey(i)) w.writeShort(h.get(i).getId());
             else w.writeShort(0);
@@ -126,7 +130,7 @@ public class Player extends Entity {
 
     public void encodeInventory(EndianWriter w, StorageType type, int bags) {
         HashMap<Short, Item> h = new HashMap<>();
-        items.stream().filter(i -> i.getStorageType() == type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
+        storage.get(type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
 
         w.write(bags); // eqp_bags
         w.write(bags); // etc_bags
@@ -161,7 +165,7 @@ public class Player extends Entity {
     public void recalculate() {
         setDynamicStats(dynamicStats = new DynamicStats());
 
-        for (Item item : getItems()) {
+        for (Item item : getStorage().get(StorageType.Equipped).getItems()) {
             TemplateItem t = item.getTemplate();
             dynamicStats.addHitRate((int) t.hitRate);
             dynamicStats.addMinWeaponAttack((int) t.minAttack);
@@ -327,20 +331,12 @@ public class Player extends Entity {
         this.gender = gender;
     }
 
-    public ArrayList<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(ArrayList<Item> items) {
-        this.items = items;
+    public EnumMap<StorageType, Storage> getStorage() {
+        return storage;
     }
 
     public EnumMap<QuestMission.Status, HashSet<QuestMission>> getQuests() {
         return quests;
-    }
-
-    public void setQuests(EnumMap<QuestMission.Status, HashSet<QuestMission>> quests) {
-        this.quests = quests;
     }
 
     public Map getMap() {

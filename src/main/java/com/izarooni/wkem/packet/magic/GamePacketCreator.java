@@ -69,7 +69,7 @@ public class GamePacketCreator {
         w.skip(44);
 
         player.encodeInventory(w, StorageType.Equip, 1);
-        player.encodeInventory(w, StorageType.Etc, 1);
+        player.encodeInventory(w, StorageType.Item, 1);
         w.skip(304);
 
         w.write(0); // skill_count

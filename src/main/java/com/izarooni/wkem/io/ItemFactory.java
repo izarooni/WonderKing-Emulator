@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 /**
  * @author izarooni
+ * @author ProjectInfinity
  */
 public class ItemFactory {
 

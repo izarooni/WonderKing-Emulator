@@ -1,6 +1,8 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.life.meta.storage.Storage;
+import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
@@ -95,23 +97,23 @@ public class PlayerCreateRequest extends PacketRequest {
         player.setJob(job);
         player.setGender(gender);
 
+        Storage eq = player.getStorage().get(StorageType.Equipped);
         short[] stats;
-
         switch (job) {
             case 1: // warrior
-                player.getItems().add(new Item((short) 70)); // wooden club
+                eq.putItem(new Item((short) 70)); // wooden club
                 stats = new short[]{13, 9, 3, 5, 17, 5};
                 break;
             case 2: // mage
-                player.getItems().add(new Item((short) 150)); // shabby staff
+                eq.putItem(new Item((short) 150)); // shabby staff
                 stats = new short[]{6, 6, 14, 3, 15, 11};
                 break;
             case 3: // thief
-                player.getItems().add(new Item((short) 218)); // rusty dagger
+                eq.putItem(new Item((short) 218)); // rusty dagger
                 stats = new short[]{7, 11, 5, 9, 16, 6};
                 break;
             case 4: // scout
-                player.getItems().add(new Item((short) 299)); // shabby bow
+                eq.putItem(new Item((short) 299)); // shabby bow
                 stats = new short[]{6, 13, 8, 6, 8, 7};
                 break;
             default:
@@ -125,13 +127,13 @@ public class PlayerCreateRequest extends PacketRequest {
         player.setVitality(stats[4]);
         player.setWisdom(stats[5]);
 
-        player.getItems().add(new Item(hair));
-        player.getItems().add(new Item(eyes));
-        player.getItems().add(new Item(shirt));
-        player.getItems().add(new Item(pants));
+        eq.putItem(new Item(hair));
+        eq.putItem(new Item(eyes));
+        eq.putItem(new Item(shirt));
+        eq.putItem(new Item(pants));
 
-        player.getItems().add(new Item((short) 767)); // (GM) uniform shoes
-        player.getItems().add(new Item((short) 763)); // (GM) uniform hat
+        eq.putItem(new Item((short) 767)); // (GM) uniform shoes
+        eq.putItem(new Item((short) 763)); // (GM) uniform hat
 
         user.getPlayers()[loginPosition] = player;
         user.sendPacket(getCreatePlayer(player));
