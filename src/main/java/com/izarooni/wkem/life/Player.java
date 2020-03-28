@@ -13,9 +13,7 @@ import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
 import com.izarooni.wkem.util.Vector2D;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -52,7 +50,7 @@ public class Player extends Entity {
         setLocation(new Vector2D(113, 0));
         storage = new EnumMap<>(StorageType.class);
         for (StorageType s : StorageType.values()) {
-            storage.put(s, new Storage((short) 20, (byte) 1));
+            storage.put(s, new Storage(s, (short) 20, (byte) 1));
         }
         quests = new EnumMap<>(QuestMission.Status.class);
         for (QuestMission.Status s : QuestMission.Status.values()) {
@@ -73,8 +71,10 @@ public class Player extends Entity {
         }
     }
 
-
-    @Override // 160 bytes
+    /**
+     * 160 bytes
+     */
+    @Override
     public void encode(EndianWriter w) {
         w.writeShort(getObjectID());
         w.writeShort(id);
@@ -83,15 +83,17 @@ public class Player extends Entity {
         w.write(gender);
         w.writeShort(getLocation().getX());
         w.writeShort(getLocation().getY());
-        encodeItemIDs(w, StorageType.Equipped, 20).clear();
-        encodeItemIDs(w, StorageType.EquippedCash, 20).clear();
+        getStorage().get(StorageType.Equipped).encodeItemIDs(w, 20);
+        getStorage().get(StorageType.EquippedCash).encodeItemIDs(w, 20);
         w.writeFloat(Physics.XVelocity);
         w.writeFloat(Physics.YVelocity);
         w.skip(42);
     }
 
-    // 12 bytes
-    public void encodeStats(EndianWriter w) {
+    /**
+     * 12 bytes
+     */
+    public void encodeBasicStats(EndianWriter w) {
         w.writeShort(str);
         w.writeShort(dex);
         w.writeShort($int);
@@ -100,66 +102,28 @@ public class Player extends Entity {
         w.writeShort(wisdom);
     }
 
-    public HashMap<Short, Item> encodeItemIDs(EndianWriter w, StorageType type, int count) {
-        HashMap<Short, Item> h = new HashMap<>();
-        storage.get(type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
-        for (short i = 0; i < count; i++) {
-            if (h.containsKey(i)) w.writeShort(h.get(i).getId());
-            else w.writeShort(0);
-        }
-        return h;
-    }
-
-    public void encodeItemStats(EndianWriter w, StorageType type, int count) {
-        HashMap<Short, Item> h = encodeItemIDs(w, type, count);
-        for (int i = 0; i < count; i++) {
-            /*
-            w.write(itemLevel);
-            w.write(itemRarity);
-            w.write(itemAddOption);
-            w.write(itemAddOption2);
-            w.write(itemAddOption3);
-            w.writeShort(itemOption);
-            w.writeShort(itemOption2);
-            w.writeShort(itemOption3);
-             */
-            w.skip(11);
-        }
-        h.clear();
-    }
-
-    public void encodeInventory(EndianWriter w, StorageType type, int bags) {
-        HashMap<Short, Item> h = new HashMap<>();
-        storage.get(type).forEach(i -> h.put((short) i.getTemplate().slotNo, i));
-
-        w.write(bags); // eqp_bags
-        w.write(bags); // etc_bags
-
-        for (short bag = 0; bag < bags; bag++) {
-            final short start = (short) (20 * bag), end = (short) (20 * (bag + 1));
-            for (short key = start; key < end; key++) {
-                if (h.containsKey(key)) w.writeShort(h.get(key).getId());
-                else w.writeShort(0);
-            }
-            for (short key = start; key < end; key++) {
-                if (h.containsKey(key)) w.writeShort(h.get(key).getQuantity());
-                else w.writeShort(0);
-            }
-            for (short key = start; key < end; key++) {
-                /*
-                w.write(itemLevel);
-                w.write(itemRarity);
-                w.write(itemAddOption);
-                w.write(itemAddOption2);
-                w.write(itemAddOption3);
-                w.writeShort(itemOption);
-                w.writeShort(itemOption2);
-                w.writeShort(itemOption3);
-                 */
-                w.skip(11);
-            }
-        }
-        h.clear();
+    /**
+     * 108 bytes
+     */
+    public void encodeStats(EndianWriter w) {
+        w.writeShort(getHp());
+        w.writeShort(getMp());
+        w.writeShort(getMaxHp());
+        w.writeShort(getMaxMp());
+        w.writeShort(1000);
+        getDynamicStats().encodeAttack(w);
+        w.writeShort(10);
+        w.writeShort(7);
+        w.writeShort(7);
+        w.writeShort(7);
+        w.writeShort(7);
+        getDynamicStats().encodeElements(w);
+        w.writeFloat(Physics.XVelocity);
+        w.writeFloat(Physics.YVelocity);
+        w.writeShort(0); // critical
+        w.writeShort(0); // bonus stats
+        w.writeShort(0); // skill points
+        w.skip(44);
     }
 
     public void recalculate() {

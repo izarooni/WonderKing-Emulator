@@ -51,7 +51,7 @@ public enum PacketOperations {
     Item_Spawn(44),
     Item_Disappear(45),
     Damage(46),
-    Player_Update2(47),
+    Remote_Player_Update_Avatar(47),
     Player_Emote(48),
     Item_Pickup(49),
     Player_EXP_Level(50),
@@ -63,7 +63,7 @@ public enum PacketOperations {
     Item_Drop(56),
     Unk0x0039(57),
     Player_UpdateHPMP(58),
-    Player_Update1(59),
+    Player_Update_Stats(59),
     Map_Transfer(60),
     Player_Chat(61),
     LevelUp_Effect(62),
@@ -532,6 +532,7 @@ public enum PacketOperations {
         Player_Quit.handler = PlayerQuitRequest.class;
 
         Item_Unequip.handler = PlayerUnequipRequest.class;
+        Item_Equip.handler = PlayerEquipRequest.class;
 
         Quest_Receive.handler = PlayerQuestReceiveRequest.class;
         Quest_Complete.handler = PlayerQuestCompleteRequest.class;

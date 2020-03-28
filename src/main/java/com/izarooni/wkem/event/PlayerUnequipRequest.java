@@ -7,6 +7,7 @@ import com.izarooni.wkem.life.meta.storage.Storage;
 import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
+import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.packet.magic.PacketOperations;
 
 import java.util.Optional;
@@ -18,15 +19,17 @@ import java.util.Optional;
  */
 public class PlayerUnequipRequest extends PacketRequest {
 
-    private byte unk;
-    private byte slotNo;
-    private int itemID;
+    private byte unk, unk2, dstNo;
+    private byte srcNo;
+    private short itemID;
 
     @Override
     public boolean process(EndianReader reader) {
         unk = reader.readByte();
-        slotNo = reader.readByte();
-        itemID = reader.readInt();
+        srcNo = reader.readByte();
+        itemID = reader.readShort();
+        unk2 = reader.readByte();
+        dstNo = reader.readByte();
         return true;
     }
 
@@ -34,16 +37,48 @@ public class PlayerUnequipRequest extends PacketRequest {
     public void run() {
         User user = getUser();
         Player player = user.getPlayer();
-        Storage eq = player.getStorage().get(StorageType.Equipped);
+        Storage eqd = player.getStorage().get(StorageType.Equipped);
+        Storage eq = player.getStorage().get(StorageType.Equip);
 
         byte dstSlot = eq.getFirstAvailableSlot();
-        Optional<Item> first = eq.findItem(i -> i.getTemplate().slotNo == slotNo && i.getId() == itemID).findFirst();
+        Optional<Item> first = eqd.findItem(i -> i.getTemplate().slotNo == srcNo && i.getId() == itemID).findFirst();
         if (!first.isPresent() || dstSlot == -1 || first.get().getId() != itemID) {
             user.sendPacket(getUnequipFail());
-            return;
+        } else {
+            Item item = eqd.removeItem(first.get());
+            eq.putItem(dstSlot, item);
+
+            EndianWriter w = new EndianWriter(32);
+            w.writeShort(PacketOperations.Item_Unequip.Id);
+            w.write(1);
+
+            w.write(0);
+
+            w.write(srcNo);
+            w.write(0);
+//            w.writeShort(0);
+
+            w.writeInt(0);
+            w.writeInt(0);
+            w.writeShort(0);
+            w.write(0);
+
+            w.write(0);
+            w.write(0);
+
+            w.write(dstSlot); // 18
+            w.writeShort(item.getId());
+            w.writeInt(item.getQuantity());
+            w.writeInt(0);
+            w.writeShort(0);
+            w.write(0);
+
+            user.sendPacket(w);
         }
-        Item item = first.get();
-        user.sendPacket(getUnequip(item, unk, dstSlot));
+
+        player.recalculate();
+        user.sendPacket(GamePacketCreator.getPlayerUpdateLocalStats(player));
+        player.getMap().sendPacket(GamePacketCreator.getRemotePlayerUpdateAvatar(player));
     }
 
     /**
@@ -56,30 +91,24 @@ public class PlayerUnequipRequest extends PacketRequest {
         return w;
     }
 
-    public static EndianWriter getUnequip(Item item, int unk, byte dstSlot) {
-        EndianWriter w = new EndianWriter(32);
-        w.writeShort(PacketOperations.Item_Unequip.Id);
-        w.write(1);
-
-        w.write(unk);
-        w.writeShort(item.getId());
-        w.writeInt(item.getQuantity());
-
-        w.writeInt(0);
-        w.writeShort(0);
-        w.write(0);
-        w.write(0);
-        w.write(0);
-
-        w.write(dstSlot);
-        w.writeShort(item.getId());
-        w.writeInt(item.getQuantity());
-
-        w.writeInt(0);
-        w.writeShort(0);
-        w.write(0);
-        w.write(0);
-        w.write(0);
-        return w;
-    }
+    /*
+     *(_BYTE *)packet
+     *
+     *((_BYTE *)packet + 2),
+     *(_WORD *)((char *)packet + 3),
+     *(_DWORD *)((char *)packet + 5),
+     *(_DWORD *)((char *)packet + 9);
+     *(_WORD *)((char *)packet + 13);
+     *((_BYTE *)packet + 15);
+     *
+     *((_BYTE *)packet + 16);
+     *((_BYTE *)packet + 17),
+     *
+     *((_WORD *)packet + 9),
+     *((_WORD *)packet + 10),
+     *(_DWORD *)((char *)packet + 22),
+     *(_DWORD *)((char *)packet + 26);
+     *((_WORD *)packet + 15);
+     *((_BYTE *)packet + 32);
+     */
 }

@@ -98,22 +98,23 @@ public class PlayerCreateRequest extends PacketRequest {
         player.setGender(gender);
 
         Storage eq = player.getStorage().get(StorageType.Equipped);
+
         short[] stats;
         switch (job) {
             case 1: // warrior
-                eq.putItem(new Item((short) 70)); // wooden club
+                eq.equipItem(new Item((short) 70)); // wooden club
                 stats = new short[]{13, 9, 3, 5, 17, 5};
                 break;
             case 2: // mage
-                eq.putItem(new Item((short) 150)); // shabby staff
+                eq.equipItem(new Item((short) 150)); // shabby staff
                 stats = new short[]{6, 6, 14, 3, 15, 11};
                 break;
             case 3: // thief
-                eq.putItem(new Item((short) 218)); // rusty dagger
+                eq.equipItem(new Item((short) 218)); // rusty dagger
                 stats = new short[]{7, 11, 5, 9, 16, 6};
                 break;
             case 4: // scout
-                eq.putItem(new Item((short) 299)); // shabby bow
+                eq.equipItem(new Item((short) 299)); // shabby bow
                 stats = new short[]{6, 13, 8, 6, 8, 7};
                 break;
             default:
@@ -127,13 +128,13 @@ public class PlayerCreateRequest extends PacketRequest {
         player.setVitality(stats[4]);
         player.setWisdom(stats[5]);
 
-        eq.putItem(new Item(hair));
-        eq.putItem(new Item(eyes));
-        eq.putItem(new Item(shirt));
-        eq.putItem(new Item(pants));
+        eq.equipItem(new Item(hair));
+        eq.equipItem(new Item(eyes));
+        eq.equipItem(new Item(shirt));
+        eq.equipItem(new Item(pants));
 
-        eq.putItem(new Item((short) 767)); // (GM) uniform shoes
-        eq.putItem(new Item((short) 763)); // (GM) uniform hat
+        eq.equipItem(new Item((short) 767)); // (GM) uniform shoes
+        eq.equipItem(new Item((short) 763)); // (GM) uniform hat
 
         user.getPlayers()[loginPosition] = player;
         user.sendPacket(getCreatePlayer(player));

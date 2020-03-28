@@ -32,6 +32,7 @@ public class DynamicStats {
         w.writeShort(evasion);
     }
 
+    /* 16 bytes */
     public void encodeElements(EndianWriter w) {
         Element[] values = Element.values();
         for (Element e : values) {

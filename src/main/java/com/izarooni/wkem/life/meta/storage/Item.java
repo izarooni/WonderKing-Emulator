@@ -116,9 +116,10 @@ public class Item {
     }
 
     private final short id;
-    private final TemplateItem template;
+    private final transient TemplateItem template;
     private StorageType storageType;
     private int quantity;
+    private byte inventorySlot;
 
     public Item(short id) {
         this(id, 1);
@@ -153,5 +154,13 @@ public class Item {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public byte getInventorySlot() {
+        return inventorySlot;
+    }
+
+    public void setInventorySlot(byte inventorySlot) {
+        this.inventorySlot = inventorySlot;
     }
 }

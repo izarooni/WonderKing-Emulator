@@ -105,11 +105,11 @@ public enum LoginPacketCreator {
         w.write(player.getGender());
         w.writeShort(player.getLevel());
         w.write(0); // exp as percentage
-        player.encodeStats(w);
+        player.encodeBasicStats(w);
         w.writeInt(player.getHp());
         w.writeInt(player.getMp());
-        player.encodeItemIDs(w, StorageType.Equipped, 20);
-        player.encodeItemIDs(w, StorageType.EquippedCash, 20);
+        player.getStorage().get(StorageType.Equipped).encodeItemIDs(w, 20);
+        player.getStorage().get(StorageType.EquippedCash).encodeItemIDs(w, 20);
     }
 
     public static EndianWriter getNameCheckResponse(LoginPacketCreator r) {

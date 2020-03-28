@@ -5,7 +5,6 @@ import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.server.world.Physics;
 
 /**
  * @author izarooni
@@ -38,38 +37,13 @@ public class GamePacketCreator {
         w.write(0); // job 3
         w.write(0); // job 4
         w.writeLong(player.getZed()); // money
-        player.encodeItemStats(w, StorageType.Equipped, 20);
-        player.encodeItemStats(w, StorageType.EquippedCash, 20);
-
+        player.getStorage().get(StorageType.Equipped).encodeItemStats(w, 20);
+        player.getStorage().get(StorageType.EquippedCash).encodeItemStats(w, 20);
         w.skip(42);
-
+        player.encodeBasicStats(w);
         player.encodeStats(w);
-
-        w.writeShort(player.getHp());
-        w.writeShort(player.getMp());
-        w.writeShort(player.getMaxHp());
-        w.writeShort(player.getMaxMp());
-
-        w.writeShort(1000);
-
-        player.getDynamicStats().encodeAttack(w);
-
-        w.writeShort(10);
-        w.writeShort(7);
-        w.writeShort(7);
-        w.writeShort(7);
-        w.writeShort(7);
-
-        player.getDynamicStats().encodeElements(w);
-
-        w.writeFloat(Physics.XVelocity);
-        w.writeFloat(Physics.YVelocity);
-        w.writeShort(0); // critical
-        w.writeShort(0); // bonus stats
-        w.skip(44);
-
-        player.encodeInventory(w, StorageType.Equip, 1);
-        player.encodeInventory(w, StorageType.Item, 1);
+        player.getStorage().get(StorageType.Equip).encodeInventory(w, 1);
+        player.getStorage().get(StorageType.Item).encodeInventory(w, 1);
         w.skip(304);
 
         w.write(0); // skill_count
@@ -205,6 +179,26 @@ public class GamePacketCreator {
         w.writeInt(player.getAttraction()); //      dword_99188C
         w.writeInt(0); // another points system? dword_991890
         w.writeShort(player.getLevel());
+        return w;
+    }
+
+    // [004D83AA]
+    public static EndianWriter getPlayerUpdateLocalStats(Player player) {
+        EndianWriter w = new EndianWriter(122);
+        w.writeShort(PacketOperations.Player_Update_Stats.Id);
+        player.encodeBasicStats(w);
+        player.encodeStats(w);
+        return w;
+    }
+
+    public static EndianWriter getRemotePlayerUpdateAvatar(Player player) {
+        EndianWriter w = new EndianWriter();
+        w.writeShort(PacketOperations.Remote_Player_Update_Avatar.Id);
+        w.writeShort(player.getId());
+        player.getStorage().get(StorageType.Equipped).encodeItemIDs(w, 20);
+        player.getStorage().get(StorageType.EquippedCash).encodeItemIDs(w, 20);
+        w.writeFloat(player.getLocation().getX());
+        w.writeFloat(player.getLocation().getY());
         return w;
     }
 

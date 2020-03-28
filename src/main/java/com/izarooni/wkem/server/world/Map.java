@@ -99,6 +99,10 @@ public class Map implements PacketAnnouncer, Disposable {
             user.sendPacket(GamePacketCreator.getPlayerMapTransfer(player, this));
             user.sendPacket(GamePacketCreator.getGameEnter());
 
+            for (Player others : players.values()) {
+                user.sendPacket(GamePacketCreator.getPlayerAppear(others));
+            }
+
             if (npcs != null) {
                 for (Npc npc : npcs.values()) {
                     user.sendPacket(GamePacketCreator.getNpcAppear(npc));
