@@ -530,6 +530,7 @@ public enum PacketOperations {
         Player_ViewInfo.handler = PlayerViewInfoRequest.class;
         Player_Chat.handler = PlayerChatRequest.class;
         Player_Quit.handler = PlayerQuitRequest.class;
+        Player_Attack.handler = PlayerAttackRequest.class;
 
         Item_Unequip.handler = PlayerUnequipRequest.class;
         Item_Equip.handler = PlayerEquipRequest.class;
