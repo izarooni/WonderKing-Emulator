@@ -18,6 +18,9 @@ public class ItemFactory {
 
     static HashMap<Long, TemplateItem> baseItemData;
 
+    private ItemFactory() {
+    }
+
     public static Stream<TemplateItem> findItems(String name) {
         return baseItemData.values().stream().filter(i -> Pattern.compile(name, Pattern.CASE_INSENSITIVE).matcher(i.name).find());
     }

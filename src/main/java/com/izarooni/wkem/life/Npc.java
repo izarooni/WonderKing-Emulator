@@ -1,5 +1,7 @@
 package com.izarooni.wkem.life;
 
+import com.izarooni.wkem.io.NpcFactory;
+import com.izarooni.wkem.io.meta.TemplateNpc;
 import com.izarooni.wkem.io.meta.TemplateSpawnPoint;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.server.world.Physics;
@@ -11,10 +13,17 @@ import com.izarooni.wkem.util.Vector2D;
 public class Npc extends Entity {
 
     private final TemplateSpawnPoint template;
+    private float physicsX;
 
     public Npc(TemplateSpawnPoint template) {
         this.template = template;
 
+        TemplateNpc npc = NpcFactory.getNpc(template.id);
+        setMaxHp(npc.hp);
+        setMaxMp(npc.mp);
+        setHp(getMaxHp());
+        setMp(getMaxMp());
+        physicsX = npc.speed;
         setLocation(new Vector2D(template.area.x, template.area.y));
     }
 
@@ -30,8 +39,8 @@ public class Npc extends Entity {
         w.writeShort(getLocation().getY());
         w.writeShort(getHp());
         w.writeShort(getMp());
-        w.writeShort((int) Physics.XVelocity); // 23
-        w.writeShort((int) Physics.YVelocity); // 27
+        w.writeShort((int) physicsX);
+        w.writeShort((int) Physics.YVelocity);
         w.skip(42);
     }
 

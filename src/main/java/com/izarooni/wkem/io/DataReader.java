@@ -21,6 +21,8 @@ public class DataReader {
         LOGGER.info("{} 'baseitemdata' entries cached", ItemFactory.baseItemData.size());
         MapFactory.createCache();
         LOGGER.info("{} map templates cached", MapFactory.templateMaps.size());
+        NpcFactory.loadNpcStatData();
+        LOGGER.info("{} npc templates cached", NpcFactory.templateNpcs.size());
     }
 
     public static FileInputStream openFile(File file) throws FileNotFoundException {

@@ -46,7 +46,7 @@ public class Player extends Entity {
         setMaxHp(50);
         setMp(50);
         setMaxMp(50);
-        setMapId(300);
+        setMapId(301);
         setLocation(new Vector2D(113, 0));
         storage = new EnumMap<>(StorageType.class);
         for (StorageType s : StorageType.values()) {

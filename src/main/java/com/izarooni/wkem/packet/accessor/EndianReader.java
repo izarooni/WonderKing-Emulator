@@ -170,7 +170,11 @@ public class EndianReader {
         return dest;
     }
 
-    public String readAsciiString(int n) {
-        return new String(read(n), Charset.forName(CodePage));
+    public String readAsciiString(int size) {
+        return new String(read(size), Charset.forName(CodePage));
+    }
+
+    public float readFloat() {
+        return ((float) ((int) this.readByte() | (int) this.readByte() << 8 | (int) this.readByte() << 16 | (int) this.readByte() << 24));
     }
 }

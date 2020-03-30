@@ -29,7 +29,7 @@ public class MapFactory {
         return templateMaps.get(mapID);
     }
 
-    public static void createCache() throws IOException {
+    static void createCache() throws IOException {
         loadMapNames();
         for (Map.Entry<Integer, TemplateMap> e : templateMaps.entrySet()) {
             TemplateMap template = e.getValue();

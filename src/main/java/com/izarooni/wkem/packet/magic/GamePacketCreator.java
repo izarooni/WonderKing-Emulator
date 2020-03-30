@@ -203,7 +203,7 @@ public class GamePacketCreator {
     }
 
     public static EndianWriter getNpcAppear(Npc npc) {
-        EndianWriter w = new EndianWriter(69);
+        EndianWriter w = new EndianWriter(71);
         w.writeShort(PacketOperations.Npc_Appear.Id);
         npc.encode(w);
         return w;

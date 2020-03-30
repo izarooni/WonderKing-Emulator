@@ -133,8 +133,8 @@ public class PlayerCreateRequest extends PacketRequest {
         eq.equipItem(new Item(shirt));
         eq.equipItem(new Item(pants));
 
-        eq.equipItem(new Item((short) 767)); // (GM) uniform shoes
-        eq.equipItem(new Item((short) 763)); // (GM) uniform hat
+//        eq.equipItem(new Item((short) 767)); // (GM) uniform shoes
+//        eq.equipItem(new Item((short) 763)); // (GM) uniform hat
 
         user.getPlayers()[loginPosition] = player;
         user.sendPacket(getCreatePlayer(player));
