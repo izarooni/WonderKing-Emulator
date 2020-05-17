@@ -17,3 +17,7 @@ Only one argument is mandatory when starting your server.
 ``` 
 This creates a system property for our logging library so errors can be printed to a file leaving less clutter in our console.  
 You will not see any logging without the configuration file and this property. 
+
+***
+
+![in-game image](https://github.com/izarooni/WonderKing-Emulator/blob/master/images/game-screenshot.png)
