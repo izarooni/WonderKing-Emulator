@@ -1,15 +1,17 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.life.meta.storage.Item;
 import com.izarooni.wkem.life.meta.storage.Storage;
 import com.izarooni.wkem.life.meta.storage.StorageType;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.packet.magic.PacketOperations;
-import com.izarooni.wkem.life.Player;
-import com.izarooni.wkem.life.meta.storage.Item;
+import com.izarooni.wkem.util.Trunk;
 
+import java.sql.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -90,7 +92,6 @@ public class PlayerCreateRequest extends PacketRequest {
             return;
         }
 
-        player.setId(UID.getAndIncrement());
         player.setLoginPosition(loginPosition);
         player.setHair(hair);
         player.setEyes(eyes);
@@ -133,11 +134,49 @@ public class PlayerCreateRequest extends PacketRequest {
         eq.equipItem(new Item(shirt));
         eq.equipItem(new Item(pants));
 
-//        eq.equipItem(new Item((short) 767)); // (GM) uniform shoes
-//        eq.equipItem(new Item((short) 763)); // (GM) uniform hat
+        try (Connection con = Trunk.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("insert into players (account_id, username, hair, eyes, gender) values (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                // minimum data to create a new row in the `player` table
+                ps.setInt(1, user.getId());
+                ps.setString(2, player.getUsername());
+                ps.setShort(3, player.getHair());
+                ps.setShort(4, player.getEyes());
+                ps.setByte(5, player.getGender());
+
+                if (ps.executeUpdate() == 1) {
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+                        // move cursor to first index and retrieve the generated value from players.id
+                        rs.next();
+                        player.setId(rs.getInt(1));
+                    }
+                    try {
+                        // this will save all other data (stats, level, map, equips, etc.)
+                        player.save(con);
+                    } catch (SQLException e) {
+                        getLogger().error("Failed to save character '{}', ID: {}", player.getUsername(), player.getId(), e);
+                        con.rollback(); // rollback any attempted changes in Player#save
+                        try (PreparedStatement p = con.prepareStatement("delete from players where id = ?")) {
+                            // then delete previously inserted row
+                            p.setInt(1, player.getId());
+                            p.executeUpdate();
+                        }
+                    }
+                    getLogger().info("Created new character '{}', ID: {}", player.getUsername(), player.getId());
+                } else {
+                    throw new SQLException("What the fuck is going on? No updated rows after creating a new character");
+                }
+            } catch (SQLException e) {
+                user.sendPacket(getCreatePlayerFailed());
+                getLogger().error("Failed to insert player for user '{}'", user.getUsername(), e);
+                return;
+            }
+        } catch (SQLException e) {
+            user.sendPacket(getCreatePlayerFailed());
+            getLogger().error("Failed to obtain connection?", e);
+            return;
+        }
 
         user.getPlayers()[loginPosition] = player;
         user.sendPacket(getCreatePlayer(player));
-        getLogger().info("Created player('{}')", player.getUsername());
     }
 }

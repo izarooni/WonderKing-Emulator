@@ -4,6 +4,11 @@ import com.izarooni.wkem.client.User;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
 import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.util.Trunk;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * @author izarooni
@@ -31,7 +36,18 @@ public class PlayerDeleteRequest extends PacketRequest {
     @Override
     public void run() {
         User user = getUser();
-        user.sendPacket(LoginPacketCreator.getDeletePlayer(loginPosition));
+
+        Player player = user.getPlayers()[loginPosition];
+        try (Connection con = Trunk.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("delete from players where id = ?")) {
+                ps.setInt(1, player.getId());
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            getLogger().error("Failed to delete character '{}', ID: {}", player.getUsername(), player.getId(), e);
+            return;
+        }
         user.getPlayers()[loginPosition] = null;
+        user.sendPacket(LoginPacketCreator.getDeletePlayer(loginPosition));
     }
 }

@@ -49,6 +49,11 @@ public class Channel implements PacketAnnouncer, Disposable {
     }
 
     @Override
+    public String toString() {
+        return String.format("Channel{serverId=%d, id=%d, address='%s', port=%d}", serverId, id, address, port);
+    }
+
+    @Override
     public void dispose() {
         socket.unbind();
         socket.dispose(false);

@@ -13,6 +13,10 @@ import com.izarooni.wkem.server.world.Map;
 import com.izarooni.wkem.server.world.Physics;
 import com.izarooni.wkem.util.Vector2D;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.EnumMap;
 import java.util.HashSet;
 
@@ -56,7 +60,7 @@ public class Player extends Entity {
         for (QuestMission.Status s : QuestMission.Status.values()) {
             quests.put(s, new HashSet<>());
         }
-        setDynamicStats(dynamicStats);
+        setDynamicStats(new DynamicStats());
     }
 
     @Override
@@ -141,6 +145,89 @@ public class Player extends Entity {
             dynamicStats.addResistance(Element.Dark, (int) t.darkResist);
             dynamicStats.addResistance(Element.Holy, (int) t.holyResist);
         }
+    }
+
+    public void load(Connection con, ResultSet r) throws SQLException {
+        id = r.getInt("id");
+        username = r.getString("username");
+        exp = r.getLong("exp");
+        hair = r.getShort("hair");
+        eyes = r.getShort("eyes");
+        str = r.getShort("str");
+        dex = r.getShort("dex");
+        $int = r.getShort("int");
+        luk = r.getShort("luk");
+        vitality = r.getShort("vitality");
+        wisdom = r.getShort("wisdom");
+        mapId = r.getInt("map_id");
+        zed = r.getInt("money");
+        attraction = r.getInt("attraction");
+        level = r.getByte("level");
+        job = r.getByte("job");
+        gender = r.getByte("gender");
+
+        try (PreparedStatement ps = con.prepareStatement("select * from storage where player_id = ?")) {
+            ps.setInt(1, getId());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Item item = new Item(rs.getShort("item_id"), rs.getInt("quantity"));
+                    Storage storage = this.storage.get(item.getStorageType());
+                    if (item.getStorageType() == StorageType.Equipped) {
+                        storage.equipItem(item);
+                    } else {
+                        storage.putItem(rs.getByte("inventory_slot"), item);
+                    }
+                }
+            }
+        }
+    }
+
+    public void save(Connection con) throws SQLException {
+        try (PreparedStatement ps = con.prepareStatement("update players\n" +
+                "set username   = ?,\n" +
+                "    exp        = ?,\n" +
+                "    hair       = ?,\n" +
+                "    eyes       = ?,\n" +
+                "    str        = ?,\n" +
+                "    dex        = ?,\n" +
+                "    `int`      = ?,\n" +
+                "    luk        = ?,\n" +
+                "    vitality   = ?,\n" +
+                "    wisdom     = ?,\n" +
+                "    map_id     = ?,\n" +
+                "    money      = ?,\n" +
+                "    attraction = ?,\n" +
+                "    level      = ?,\n" +
+                "    job        = ?,\n" +
+                "    gender     = ?\n" +
+                "where id = ?")) {
+            ps.setString(1, getUsername());
+            ps.setLong(2, getExp());
+            ps.setShort(3, getHair());
+            ps.setShort(4, getEyes());
+            ps.setShort(5, getStr());
+            ps.setShort(6, getDex());
+            ps.setShort(7, getInt());
+            ps.setShort(8, getLuk());
+            ps.setShort(9, getVitality());
+            ps.setShort(10, getWisdom());
+            ps.setInt(11, getMapId());
+            ps.setInt(12, getZed());
+            ps.setInt(13, getAttraction());
+            ps.setByte(14, getLevel());
+            ps.setByte(15, getJob());
+            ps.setByte(16, getGender());
+            ps.setInt(17, getId());
+            ps.executeUpdate();
+        }
+        try (PreparedStatement ps = con.prepareStatement("delete from storage where player_id = ?")) {
+            ps.setInt(1, getId());
+            ps.executeUpdate();
+        }
+        for (Storage s : getStorage().values()) {
+            s.save(con, getId());
+        }
+        con.commit();
     }
 
     public User getUser() {

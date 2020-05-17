@@ -5,10 +5,10 @@ import com.izarooni.wkem.io.MapFactory;
 import com.izarooni.wkem.io.meta.TemplateMap;
 import com.izarooni.wkem.io.meta.TemplateMapPortal;
 import com.izarooni.wkem.io.meta.TemplateSpawnPoint;
-import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.life.Entity;
 import com.izarooni.wkem.life.Npc;
 import com.izarooni.wkem.life.Player;
+import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.util.Disposable;
 import com.izarooni.wkem.util.PacketAnnouncer;
 import org.slf4j.Logger;
@@ -91,7 +91,9 @@ public class Map implements PacketAnnouncer, Disposable {
             User user = player.getUser();
 
             Map oldMap = player.getMap();
-            oldMap.removeEntity(player);
+            if (oldMap != null) {
+                oldMap.removeEntity(player);
+            }
             player.setMap(this);
             player.setMapId(getId());
 

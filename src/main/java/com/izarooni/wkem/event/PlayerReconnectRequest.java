@@ -39,7 +39,6 @@ public class PlayerReconnectRequest extends PacketRequest {
 
         user.setChannel(Backbone.getServers().get(serverID).getChannels().get(channelID));
 
-        Backbone.Users.put(username, user);
         user.sendPacket(LoginPacketCreator.getChannelList());
         getLogger().info("Login user('{}') password('{}')", username, password);
     }

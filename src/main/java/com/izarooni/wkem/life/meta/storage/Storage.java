@@ -2,6 +2,9 @@ package com.izarooni.wkem.life.meta.storage;
 
 import com.izarooni.wkem.packet.accessor.EndianWriter;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +27,20 @@ public class Storage {
         this.capacity = capacity;
         this.bags = bags;
         items = new HashMap<>(20);
+    }
+
+    public void save(Connection con, int playerID) throws SQLException {
+        if (items.isEmpty()) return; // no reason to proceed
+        try (PreparedStatement ps = con.prepareStatement("insert into storage values (?, ?, ?, ?)")) {
+            ps.setInt(1, playerID);
+            for (Item i : items.values()) {
+                ps.setShort(2, i.getId());
+                ps.setInt(3, i.getQuantity());
+                ps.setByte(4, i.getInventorySlot());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
     }
 
     public void encodeItemIDs(EndianWriter w, int count) {

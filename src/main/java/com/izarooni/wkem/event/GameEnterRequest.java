@@ -1,12 +1,11 @@
 package com.izarooni.wkem.event;
 
 import com.izarooni.wkem.client.User;
+import com.izarooni.wkem.life.Player;
 import com.izarooni.wkem.packet.accessor.EndianReader;
 import com.izarooni.wkem.packet.magic.GamePacketCreator;
 import com.izarooni.wkem.packet.magic.LoginPacketCreator;
-import com.izarooni.wkem.server.world.Map;
-import com.izarooni.wkem.life.Player;
-import com.izarooni.wkem.service.Backbone;
+import com.izarooni.wkem.server.world.Channel;
 
 /**
  * @author izarooni
@@ -27,7 +26,6 @@ public class GameEnterRequest extends PacketRequest {
         playerUsername = playerUsername.substring(0, playerUsername.indexOf('\0'));
 
         LoginPacketCreator result = user.login(accountUsername, password);
-        Backbone.Users.put(accountUsername, user);
         if (result != LoginPacketCreator.LoginResponse_Ok) {
             getLogger().warn("incorrect credentials (acc_id: '{}', password: '{}')", accountUsername, password);
             return false;
@@ -44,9 +42,6 @@ public class GameEnterRequest extends PacketRequest {
         } else if (selectedPlayer.getLoginPosition() != loginPosition) {
             getLogger().warn("character selection mismatch. got {} expected {}", loginPosition, selectedPlayer.getLoginPosition());
             return false;
-//        } else if (!selectedPlayer.getUsername().equals(playerUsername)) {
-//            getLogger().warn("character username mismatch. got '{}', expected '{}'", playerUsername, selectedPlayer.getUsername());
-//            return false;
         }
         return true;
     }
@@ -54,11 +49,16 @@ public class GameEnterRequest extends PacketRequest {
     @Override
     public void run() {
         User user = getUser();
-        user.setPlayer(selectedPlayer);
 
+        user.setPlayer(selectedPlayer);
+        selectedPlayer.setUser(user);
+
+
+        selectedPlayer.recalculate();
         user.sendPacket(GamePacketCreator.getPlayerInfo(selectedPlayer));
-        Map map = user.getChannel().getMap(selectedPlayer.getMapId());
-        selectedPlayer.setMap(map);
-        map.addEntity(selectedPlayer);
+
+        Channel channel = user.getChannel();
+        channel.getPlayers().put(selectedPlayer.getId(), selectedPlayer);
+        channel.getMap(selectedPlayer.getMapId()).addEntity(selectedPlayer);
     }
 }

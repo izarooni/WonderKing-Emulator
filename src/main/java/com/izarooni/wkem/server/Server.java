@@ -22,6 +22,11 @@ public class Server {
         channels = new ArrayList<>(30);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Server{id=%d, name='%s'}", id, name);
+    }
+
     public int getId() {
         return id;
     }

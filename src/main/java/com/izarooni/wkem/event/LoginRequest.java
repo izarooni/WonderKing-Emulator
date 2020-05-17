@@ -34,7 +34,6 @@ public class LoginRequest extends PacketRequest {
             return;
         }
 
-        Backbone.Users.put(username, user);
         user.sendPacket(LoginPacketCreator.getChannelList());
         getLogger().info("Login user('{}') password('{}')", username, password);
     }
